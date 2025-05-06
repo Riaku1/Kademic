@@ -1,0 +1,13 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the registration_init() hook (in hooks/registration.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="registration-date_of_joining-<%%VALUE(id)%%>" class="registration-date_of_joining"><%%VALUE(date_of_joining)%%></td>
+		<td id="registration-photo-<%%VALUE(id)%%>" class="registration-photo"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="registration-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=registration&f=photo&v=tv" class="img-thumbnail"></a></td>
+		<td id="registration-full_name-<%%VALUE(id)%%>" class="registration-full_name"><%%VALUE(full_name)%%></td>
+		<td id="registration-date_of_birth-<%%VALUE(id)%%>" class="registration-date_of_birth"><%%VALUE(date_of_birth)%%></td>
+		<td id="registration-age-<%%VALUE(id)%%>" class="registration-age text-right"><%%VALUE(age)%%></td>
+		<td id="registration-gender-<%%VALUE(id)%%>" class="registration-gender"><%%VALUE(gender)%%></td>
