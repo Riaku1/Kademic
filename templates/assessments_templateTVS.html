@@ -1,0 +1,15 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the assessments_init() hook (in hooks/assessments.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="assessments-class-<%%VALUE(id)%%>" class="assessments-class"><%%VALUE(class)%%></td>
+		<td id="assessments-total_marks-<%%VALUE(id)%%>" class="assessments-total_marks text-right"><%%VALUE(total_marks)%%></td>
+		<td id="assessments-teacher-<%%VALUE(id)%%>" class="assessments-teacher"><%%VALUE(teacher)%%></td>
+		<td id="assessments-subject-<%%VALUE(id)%%>" class="assessments-subject"><%%VALUE(subject)%%></td>
+		<td id="assessments-avg_performance-<%%VALUE(id)%%>" class="assessments-avg_performance"><%%VALUE(avg_performance)%%></td>
+		<td id="assessments-highest_mark-<%%VALUE(id)%%>" class="assessments-highest_mark"><%%VALUE(highest_mark)%%></td>
+		<td id="assessments-lowest_mark-<%%VALUE(id)%%>" class="assessments-lowest_mark"><%%VALUE(lowest_mark)%%></td>
+		<td id="assessments-date-<%%VALUE(id)%%>" class="assessments-date"><%%VALUE(date)%%></td>

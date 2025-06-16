@@ -12,18 +12,21 @@
 		setupTable(
 			'enrollment', " 
 			CREATE TABLE IF NOT EXISTS `enrollment` ( 
-				`stid` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				`date` DATE NULL,
+				`stid` INT(35) UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`stid`),
 				`full_name` INT(35) UNSIGNED NOT NULL,
-				`class` INT UNSIGNED NOT NULL,
-				`year` INT UNSIGNED NULL,
-				`term` VARCHAR(40) NULL,
-				`total_fees` DECIMAL(10,2) NULL DEFAULT '0.00',
-				`amount_received` INT NULL,
-				`balance` INT NULL
+				`class` INT(4) UNSIGNED NOT NULL,
+				`term` VARCHAR(40) NOT NULL,
+				`year` INT(4) UNSIGNED NULL,
+				`fees_code` INT(13) UNSIGNED NULL,
+				`amount_received` INT(11) NULL,
+				`balance` INT(11) NULL,
+				`cleared` VARCHAR(10) NULL,
+				`structure` INT(9) NULL
 			) CHARSET utf8mb4"
 		);
-		setupIndexes('enrollment', ['full_name','class',]);
+		setupIndexes('enrollment', ['full_name','class','fees_code',]);
 
 		setupTable(
 			'classes', " 
@@ -31,12 +34,8 @@
 				`id` INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
 				`class` VARCHAR(3) NOT NULL,
-				`year` INT NULL
-			) CHARSET utf8mb4", [
-				" ALTER TABLE `classes` CHANGE `class` `class` VARCHAR(40) NOT NULL ",
-				" ALTER TABLE `classes` CHANGE `class` `class` VARCHAR(3) NOT NULL ",
-				" ALTER TABLE `classes` CHANGE `id` `id` INT(4) UNSIGNED NOT NULL AUTO_INCREMENT ",
-			]
+				`year` INT(11) NULL
+			) CHARSET utf8mb4"
 		);
 
 		setupTable(
@@ -45,16 +44,154 @@
 				`id` INT(35) UNSIGNED NOT NULL AUTO_INCREMENT,
 				PRIMARY KEY (`id`),
 				`date_of_joining` DATE NULL,
-				`photo` VARCHAR(40) NULL,
+				`photo` VARCHAR(40) NOT NULL,
 				`full_name` VARCHAR(40) NOT NULL,
 				`date_of_birth` DATE NOT NULL,
-				`age` INT NULL,
+				`age` INT(11) NULL,
 				`gender` VARCHAR(40) NOT NULL,
 				`parent_gurdian` VARCHAR(40) NOT NULL,
-				`contact` INT NOT NULL,
+				`contact` INT(11) NOT NULL,
 				`address` VARCHAR(40) NOT NULL
 			) CHARSET utf8mb4"
 		);
+
+		setupTable(
+			'fees_structure', " 
+			CREATE TABLE IF NOT EXISTS `fees_structure` ( 
+				`id` INT(13) UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`code` VARCHAR(3) NOT NULL,
+				UNIQUE `code_unique` (`code`),
+				`fees` DECIMAL(10,2) NOT NULL DEFAULT '0.00',
+				`description` TEXT NULL
+			) CHARSET utf8mb4"
+		);
+
+		setupTable(
+			'fees_payments', " 
+			CREATE TABLE IF NOT EXISTS `fees_payments` ( 
+				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`date` DATE NULL,
+				`student` INT(10) UNSIGNED NOT NULL,
+				`class` INT(10) UNSIGNED NULL,
+				`term` INT(10) UNSIGNED NULL,
+				`amount_received` INT(7) NOT NULL,
+				`received_from` VARCHAR(25) NOT NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('fees_payments', ['student',]);
+
+		setupTable(
+			'clearance_tickets', " 
+			CREATE TABLE IF NOT EXISTS `clearance_tickets` ( 
+				`c_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`c_id`),
+				`date` DATE NULL,
+				`full_name` VARCHAR(40) NULL,
+				`class` VARCHAR(40) NULL,
+				`term` VARCHAR(4) NULL
+			) CHARSET utf8mb4"
+		);
+
+		setupTable(
+			'subjects', " 
+			CREATE TABLE IF NOT EXISTS `subjects` ( 
+				`sub_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`sub_id`),
+				`subject` VARCHAR(40) NOT NULL
+			) CHARSET utf8mb4"
+		);
+
+		setupTable(
+			'staff', " 
+			CREATE TABLE IF NOT EXISTS `staff` ( 
+				`id` INT(35) UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`staff_id` VARCHAR(7) NOT NULL DEFAULT 'Em_',
+				UNIQUE `staff_id_unique` (`staff_id`),
+				`full_name` VARCHAR(40) NOT NULL,
+				`contact` VARCHAR(40) NOT NULL,
+				`subject` INT UNSIGNED NOT NULL,
+				`date_of_joining` DATE NOT NULL,
+				`contract_ends` DATE NOT NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('staff', ['subject',]);
+
+		setupTable(
+			'class_notes', " 
+			CREATE TABLE IF NOT EXISTS `class_notes` ( 
+				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`subject` INT UNSIGNED NOT NULL,
+				`class` INT(4) UNSIGNED NOT NULL,
+				`term` VARCHAR(3) NOT NULL,
+				`topics` TEXT NOT NULL,
+				`resource` VARCHAR(40) NOT NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('class_notes', ['subject','class',]);
+
+		setupTable(
+			'assessments', " 
+			CREATE TABLE IF NOT EXISTS `assessments` ( 
+				`id` INT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`class` INT(35) UNSIGNED NULL,
+				`total_marks` INT NULL,
+				`teacher` INT(35) UNSIGNED NULL,
+				`subject` INT UNSIGNED NULL,
+				`avg_performance` VARCHAR(40) NULL,
+				`highest_mark` VARCHAR(40) NULL,
+				`lowest_mark` VARCHAR(40) NULL,
+				`date` DATE NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('assessments', ['class','teacher','subject',]);
+
+		setupTable(
+			'results', " 
+			CREATE TABLE IF NOT EXISTS `results` ( 
+				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`assess` INT UNSIGNED NULL,
+				`student_name` INT(35) UNSIGNED NULL,
+				`total_marks` INT UNSIGNED NULL,
+				`result` INT NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('results', ['assess','student_name',]);
+
+		setupTable(
+			'exams', " 
+			CREATE TABLE IF NOT EXISTS `exams` ( 
+				`exm_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`exm_id`),
+				`class` INT(35) UNSIGNED NULL,
+				`total_marks` INT NULL,
+				`teacher` VARCHAR(40) NULL,
+				`subject` INT UNSIGNED NULL,
+				`avg_performance` INT(3) NULL,
+				`highest_mark` INT(3) NULL,
+				`lowest_mark` INT(3) NULL,
+				`date` DATE NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('exams', ['class','subject',]);
+
+		setupTable(
+			'rizalts', " 
+			CREATE TABLE IF NOT EXISTS `rizalts` ( 
+				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				PRIMARY KEY (`id`),
+				`exm_id` INT UNSIGNED NULL,
+				`student_name` INT(35) UNSIGNED NULL,
+				`total_marks` INT UNSIGNED NULL,
+				`result` INT NULL
+			) CHARSET utf8mb4"
+		);
+		setupIndexes('rizalts', ['exm_id','student_name',]);
 
 
 

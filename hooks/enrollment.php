@@ -97,6 +97,34 @@
 	}
 
 	function enrollment_after_update($data, $memberInfo, &$args) {
+if ($data['balance'] == 0) {
+        // Get foreign key IDs
+        $full_name_id = makeSafe($data['full_name']);
+        $class_id = makeSafe($data['class']);
+        $term = makeSafe($data['term']);
+
+        // Resolve foreign key display values
+        $full_name = sqlValue("SELECT full_name FROM registration WHERE id='{$full_name_id}'");
+        $class_name = sqlValue("SELECT class FROM classes WHERE id='{$class_id}'");
+
+        // Check if a clearance ticket already exists for the same full_name, class, and term
+        $check_sql = "SELECT COUNT(*) FROM clearance_tickets 
+                      WHERE full_name='" . makeSafe($full_name) . "' 
+                      AND class='" . makeSafe($class_name) . "' 
+                      AND term='" . makeSafe($term) . "'";
+        $exists = sqlValue($check_sql);
+
+        if (!$exists) {
+            // Insert into clearance_tickets
+            $insert_sql = "INSERT INTO clearance_tickets (full_name, class, term) 
+                           VALUES (
+                               '" . makeSafe($full_name) . "', 
+                               '" . makeSafe($class_name) . "', 
+                               '" . makeSafe($term) . "'
+                           )";
+            sql($insert_sql, $eo);
+        }
+    }
 
 		return TRUE;
 	}

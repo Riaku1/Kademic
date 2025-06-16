@@ -13,13 +13,11 @@ function enrollment_insert(&$error_message = '') {
 	if(!$arrPerm['insert']) return false;
 
 	$data = [
+		'date' => Request::dateComponents('date', '1'),
 		'full_name' => Request::lookup('full_name', ''),
 		'class' => Request::lookup('class', ''),
-		'year' => Request::lookup('class'),
 		'term' => Request::val('term', ''),
-		'total_fees' => Request::val('total_fees', '0.00'),
-		'amount_received' => Request::val('amount_received', ''),
-		'balance' => Request::val('balance', ''),
+		'fees_code' => Request::lookup('fees_code', ''),
 	];
 
 	if($data['full_name'] === '') {
@@ -29,6 +27,11 @@ function enrollment_insert(&$error_message = '') {
 	}
 	if($data['class'] === '') {
 		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Class': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
+	if($data['term'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Term': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -52,6 +55,11 @@ function enrollment_insert(&$error_message = '') {
 	}
 
 	$recID = db_insert_id(db_link());
+
+	// automatic year if passed as filterer
+	if(Request::val('filterer_year')) {
+		sql("UPDATE `enrollment` SET `year`='" . makeSafe(Request::val('filterer_year')) . "' WHERE `stid`='" . makeSafe($recID, false) . "'", $eo);
+	}
 
 	update_calc_fields('enrollment', $recID, calculated_fields()['enrollment']);
 
@@ -106,6 +114,101 @@ function enrollment_delete($selected_id, $AllowDeleteOfParents = false, $skipChe
 			);
 	}
 
+	// child table: fees_payments
+	$res = sql("SELECT `stid` FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
+	$stid = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `fees_payments` WHERE `student`='" . makeSafe($stid[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'fees_payments', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'fees_payments', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
+	// child table: assessments
+	$res = sql("SELECT `stid` FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
+	$stid = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `assessments` WHERE `class`='" . makeSafe($stid[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'assessments', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'assessments', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
+	// child table: results
+	$res = sql("SELECT `stid` FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
+	$stid = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `results` WHERE `student_name`='" . makeSafe($stid[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'results', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'results', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
+	// child table: exams
+	$res = sql("SELECT `stid` FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
+	$stid = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `exams` WHERE `class`='" . makeSafe($stid[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'exams', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'exams', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
+	// child table: rizalts
+	$res = sql("SELECT `stid` FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
+	$stid = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `rizalts` WHERE `student_name`='" . makeSafe($stid[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'rizalts', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'rizalts', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'enrollment_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
 	sql("DELETE FROM `enrollment` WHERE `stid`='{$selected_id}'", $eo);
 
 	// hook: enrollment_after_delete
@@ -125,13 +228,11 @@ function enrollment_update(&$selected_id, &$error_message = '') {
 	if(!check_record_permission('enrollment', $selected_id, 'edit')) return false;
 
 	$data = [
+		'date' => Request::dateComponents('date', ''),
 		'full_name' => Request::lookup('full_name', ''),
 		'class' => Request::lookup('class', ''),
-		'year' => Request::lookup('class'),
 		'term' => Request::val('term', ''),
-		'total_fees' => Request::val('total_fees', ''),
-		'amount_received' => Request::val('amount_received', ''),
-		'balance' => Request::val('balance', ''),
+		'fees_code' => Request::lookup('fees_code', ''),
 	];
 
 	if($data['full_name'] === '') {
@@ -141,6 +242,11 @@ function enrollment_update(&$selected_id, &$error_message = '') {
 	}
 	if($data['class'] === '') {
 		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Class': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
+	if($data['term'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Term': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -208,7 +314,7 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	$noUploads = null;
 	$row = $urow = $jsReadOnly = $jsEditable = $lookups = null;
 
-	$noSaveAsCopy = true;
+	$noSaveAsCopy = false;
 
 	// mm: get table permissions
 	$arrPerm = getTablePermissions('enrollment');
@@ -225,11 +331,20 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 
 	$filterer_full_name = Request::val('filterer_full_name');
 	$filterer_class = Request::val('filterer_class');
+	$filterer_fees_code = Request::val('filterer_fees_code');
 
 	// populate filterers, starting from children to grand-parents
 
 	// unique random identifier
 	$rnd1 = ($dvprint ? rand(1000000, 9999999) : '');
+	// combobox: date
+	$combo_date = new DateCombo;
+	$combo_date->DateFormat = "mdy";
+	$combo_date->MinYear = defined('enrollment.date.MinYear') ? constant('enrollment.date.MinYear') : 1900;
+	$combo_date->MaxYear = defined('enrollment.date.MaxYear') ? constant('enrollment.date.MaxYear') : 2100;
+	$combo_date->DefaultDate = parseMySQLDate('1', '1');
+	$combo_date->MonthNames = $Translation['month names'];
+	$combo_date->NamePrefix = 'date';
 	// combobox: full_name
 	$combo_full_name = new DataCombo;
 	// combobox: class
@@ -249,6 +364,9 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$combo_term->ListData = $combo_term->ListItem;
 	}
 	$combo_term->SelectName = 'term';
+	$combo_term->AllowNull = false;
+	// combobox: fees_code
+	$combo_fees_code = new DataCombo;
 
 	if($selected_id) {
 		if(!check_record_permission('enrollment', $selected_id, 'view'))
@@ -264,9 +382,11 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		if(!($row = db_fetch_array($res))) {
 			return error_message($Translation['No records found'], 'enrollment_view.php', false);
 		}
+		$combo_date->DefaultDate = $row['date'];
 		$combo_full_name->SelectedData = $row['full_name'];
 		$combo_class->SelectedData = $row['class'];
 		$combo_term->SelectedData = $row['term'];
+		$combo_fees_code->SelectedData = $row['fees_code'];
 		$urow = $row; /* unsanitized data */
 		$row = array_map('safe_html', $row);
 	} else {
@@ -276,12 +396,15 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$combo_full_name->SelectedData = $filterer_full_name;
 		$combo_class->SelectedData = $filterer_class;
 		$combo_term->SelectedText = (isset($filterField[1]) && $filterField[1] == '5' && $filterOperator[1] == '<=>' ? $filterValue[1] : '');
+		$combo_fees_code->SelectedData = $filterer_fees_code;
 	}
 	$combo_full_name->HTML = '<span id="full_name-container' . $rnd1 . '"></span><input type="hidden" name="full_name" id="full_name' . $rnd1 . '" value="' . html_attr($combo_full_name->SelectedData) . '">';
 	$combo_full_name->MatchText = '<span id="full_name-container-readonly' . $rnd1 . '"></span><input type="hidden" name="full_name" id="full_name' . $rnd1 . '" value="' . html_attr($combo_full_name->SelectedData) . '">';
 	$combo_class->HTML = '<span id="class-container' . $rnd1 . '"></span><input type="hidden" name="class" id="class' . $rnd1 . '" value="' . html_attr($combo_class->SelectedData) . '">';
 	$combo_class->MatchText = '<span id="class-container-readonly' . $rnd1 . '"></span><input type="hidden" name="class" id="class' . $rnd1 . '" value="' . html_attr($combo_class->SelectedData) . '">';
 	$combo_term->Render();
+	$combo_fees_code->HTML = '<span id="fees_code-container' . $rnd1 . '"></span><input type="hidden" name="fees_code" id="fees_code' . $rnd1 . '" value="' . html_attr($combo_fees_code->SelectedData) . '">';
+	$combo_fees_code->MatchText = '<span id="fees_code-container-readonly' . $rnd1 . '"></span><input type="hidden" name="fees_code" id="fees_code' . $rnd1 . '" value="' . html_attr($combo_fees_code->SelectedData) . '">';
 
 	ob_start();
 	?>
@@ -290,15 +413,17 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		// initial lookup values
 		AppGini.current_full_name__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['full_name'] : htmlspecialchars($filterer_full_name, ENT_QUOTES)); ?>"};
 		AppGini.current_class__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['class'] : htmlspecialchars($filterer_class, ENT_QUOTES)); ?>"};
+		AppGini.current_fees_code__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['fees_code'] : htmlspecialchars($filterer_fees_code, ENT_QUOTES)); ?>"};
 
 		jQuery(function() {
 			setTimeout(function() {
 				if(typeof(full_name_reload__RAND__) == 'function') full_name_reload__RAND__();
 				if(typeof(class_reload__RAND__) == 'function') class_reload__RAND__();
+				if(typeof(fees_code_reload__RAND__) == 'function') fees_code_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
 		});
 		function full_name_reload__RAND__() {
-		<?php if(($AllowUpdate || ($arrPerm['insert'] && !$selected_id)) && !$dvprint) { ?>
+		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
 
 			$j("#full_name-container__RAND__").select2({
 				/* initial default value */
@@ -375,7 +500,7 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 
 		}
 		function class_reload__RAND__() {
-		<?php if(($AllowUpdate || ($arrPerm['insert'] && !$selected_id)) && !$dvprint) { ?>
+		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
 
 			$j("#class-container__RAND__").select2({
 				/* initial default value */
@@ -451,6 +576,83 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		<?php } ?>
 
 		}
+		function fees_code_reload__RAND__() {
+		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
+
+			$j("#fees_code-container__RAND__").select2({
+				/* initial default value */
+				initSelection: function(e, c) {
+					$j.ajax({
+						url: 'ajax_combo.php',
+						dataType: 'json',
+						data: { id: AppGini.current_fees_code__RAND__.value, t: 'enrollment', f: 'fees_code' },
+						success: function(resp) {
+							c({
+								id: resp.results[0].id,
+								text: resp.results[0].text
+							});
+							$j('[name="fees_code"]').val(resp.results[0].id);
+							$j('[id=fees_code-container-readonly__RAND__]').html('<span class="match-text" id="fees_code-match-text">' + resp.results[0].text + '</span>');
+							if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=fees_structure_view_parent]').hide(); } else { $j('.btn[id=fees_structure_view_parent]').show(); }
+
+
+							if(typeof(fees_code_update_autofills__RAND__) == 'function') fees_code_update_autofills__RAND__();
+						}
+					});
+				},
+				width: '100%',
+				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				minimumResultsForSearch: 5,
+				loadMorePadding: 200,
+				ajax: {
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					cache: true,
+					data: function(term, page) { return { s: term, p: page, t: 'enrollment', f: 'fees_code' }; },
+					results: function(resp, page) { return resp; }
+				},
+				escapeMarkup: function(str) { return str; }
+			}).on('change', function(e) {
+				AppGini.current_fees_code__RAND__.value = e.added.id;
+				AppGini.current_fees_code__RAND__.text = e.added.text;
+				$j('[name="fees_code"]').val(e.added.id);
+				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=fees_structure_view_parent]').hide(); } else { $j('.btn[id=fees_structure_view_parent]').show(); }
+
+
+				if(typeof(fees_code_update_autofills__RAND__) == 'function') fees_code_update_autofills__RAND__();
+			});
+
+			if(!$j("#fees_code-container__RAND__").length) {
+				$j.ajax({
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					data: { id: AppGini.current_fees_code__RAND__.value, t: 'enrollment', f: 'fees_code' },
+					success: function(resp) {
+						$j('[name="fees_code"]').val(resp.results[0].id);
+						$j('[id=fees_code-container-readonly__RAND__]').html('<span class="match-text" id="fees_code-match-text">' + resp.results[0].text + '</span>');
+						if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=fees_structure_view_parent]').hide(); } else { $j('.btn[id=fees_structure_view_parent]').show(); }
+
+						if(typeof(fees_code_update_autofills__RAND__) == 'function') fees_code_update_autofills__RAND__();
+					}
+				});
+			}
+
+		<?php } else { ?>
+
+			$j.ajax({
+				url: 'ajax_combo.php',
+				dataType: 'json',
+				data: { id: AppGini.current_fees_code__RAND__.value, t: 'enrollment', f: 'fees_code' },
+				success: function(resp) {
+					$j('[id=fees_code-container__RAND__], [id=fees_code-container-readonly__RAND__]').html('<span class="match-text" id="fees_code-match-text">' + resp.results[0].text + '</span>');
+					if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=fees_structure_view_parent]').hide(); } else { $j('.btn[id=fees_structure_view_parent]').show(); }
+
+					if(typeof(fees_code_update_autofills__RAND__) == 'function') fees_code_update_autofills__RAND__();
+				}
+			});
+		<?php } ?>
+
+		}
 	</script>
 	<?php
 
@@ -469,11 +671,11 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	}
 
 	// process form title
-	$templateCode = str_replace('<%%DETAIL_VIEW_TITLE%%>', 'Enrollment details', $templateCode);
+	$templateCode = str_replace('<%%DETAIL_VIEW_TITLE%%>', 'Detail View', $templateCode);
 	$templateCode = str_replace('<%%RND1%%>', $rnd1, $templateCode);
 	$templateCode = str_replace('<%%EMBEDDED%%>', (Request::val('Embedded') ? 'Embedded=1' : ''), $templateCode);
 	// process buttons
-	if($arrPerm['insert'] && !$selected_id) { // allow insert and no record selected?
+	if($AllowInsert) {
 		if(!$selected_id) $templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-success" id="insert" name="insert_x" value="1" onclick="return enrollment_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save New'] . '</button>', $templateCode);
 		$templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="insert" name="insert_x" value="1" onclick="return enrollment_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save As Copy'] . '</button>', $templateCode);
 	} else {
@@ -533,25 +735,33 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	}
 
 	// set records to read only if user can't insert new records and can't edit current record
-	if(($selected_id && !$AllowUpdate) || (!$selected_id && !$AllowInsert)) {
+	if(($selected_id && !$AllowUpdate && !$AllowInsert) || (!$selected_id && !$AllowInsert)) {
 		$jsReadOnly = '';
+		$jsReadOnly .= "\tjQuery('#date').prop('readonly', true);\n";
+		$jsReadOnly .= "\tjQuery('#dateDay, #dateMonth, #dateYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#full_name').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#full_name_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
 		$jsReadOnly .= "\tjQuery('#class').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#class_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
 		$jsReadOnly .= "\tjQuery('input[name=term]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=term]:checked').next().text() + '</div>')\n";
-		$jsReadOnly .= "\tjQuery('#total_fees').replaceWith('<div class=\"form-control-static\" id=\"total_fees\">' + (jQuery('#total_fees').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#amount_received').replaceWith('<div class=\"form-control-static\" id=\"amount_received\">' + (jQuery('#amount_received').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#balance').replaceWith('<div class=\"form-control-static\" id=\"balance\">' + (jQuery('#balance').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\tjQuery('#fees_code').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\tjQuery('#fees_code_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
 		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
 
 		$noUploads = true;
-	} elseif(($AllowInsert && !$selected_id) || ($AllowUpdate && $selected_id)) {
+	} elseif($AllowInsert) {
 		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);"; // temporarily disable form change handler
 		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
 
 	// process combos
+	$templateCode = str_replace(
+		'<%%COMBO(date)%%>', 
+		($selected_id && !$arrPerm['edit'] && ($noSaveAsCopy || !$arrPerm['insert']) ? 
+			'<div class="form-control-static">' . $combo_date->GetHTML(true) . '</div>' : 
+			$combo_date->GetHTML()
+		), $templateCode);
+	$templateCode = str_replace('<%%COMBOTEXT(date)%%>', $combo_date->GetHTML(true), $templateCode);
 	$templateCode = str_replace('<%%COMBO(full_name)%%>', $combo_full_name->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(full_name)%%>', $combo_full_name->MatchText, $templateCode);
 	$templateCode = str_replace('<%%URLCOMBOTEXT(full_name)%%>', urlencode($combo_full_name->MatchText), $templateCode);
@@ -560,9 +770,12 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	$templateCode = str_replace('<%%URLCOMBOTEXT(class)%%>', urlencode($combo_class->MatchText), $templateCode);
 	$templateCode = str_replace('<%%COMBO(term)%%>', $combo_term->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(term)%%>', $combo_term->SelectedData, $templateCode);
+	$templateCode = str_replace('<%%COMBO(fees_code)%%>', $combo_fees_code->HTML, $templateCode);
+	$templateCode = str_replace('<%%COMBOTEXT(fees_code)%%>', $combo_fees_code->MatchText, $templateCode);
+	$templateCode = str_replace('<%%URLCOMBOTEXT(fees_code)%%>', urlencode($combo_fees_code->MatchText), $templateCode);
 
 	/* lookup fields array: 'lookup field name' => ['parent table name', 'lookup field caption'] */
-	$lookup_fields = ['full_name' => ['registration', 'Full name'], 'class' => ['classes', 'Class'], ];
+	$lookup_fields = ['full_name' => ['registration', 'Full name'], 'class' => ['classes', 'Class'], 'fees_code' => ['fees_structure', 'Fees code'], ];
 	foreach($lookup_fields as $luf => $ptfc) {
 		$pt_perm = getTablePermissions($ptfc[0]);
 
@@ -578,18 +791,22 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 	}
 
 	// process images
+	$templateCode = str_replace('<%%UPLOADFILE(date)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(stid)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(full_name)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(class)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(term)%%>', '', $templateCode);
-	$templateCode = str_replace('<%%UPLOADFILE(total_fees)%%>', '', $templateCode);
+	$templateCode = str_replace('<%%UPLOADFILE(fees_code)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(amount_received)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(balance)%%>', '', $templateCode);
+	$templateCode = str_replace('<%%UPLOADFILE(cleared)%%>', '', $templateCode);
+	$templateCode = str_replace('<%%UPLOADFILE(structure)%%>', '', $templateCode);
 
 	// process values
 	if($selected_id) {
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(stid)%%>', safe_html($urow['stid']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(stid)%%>', html_attr($row['stid']), $templateCode);
+		$templateCode = str_replace('<%%VALUE(date)%%>', app_datetime($row['date']), $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(date)%%>', urlencode(app_datetime($urow['date'])), $templateCode);
+		$templateCode = str_replace('<%%VALUE(stid)%%>', safe_html($urow['stid']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(stid)%%>', urlencode($urow['stid']), $templateCode);
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(full_name)%%>', safe_html($urow['full_name']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(full_name)%%>', html_attr($row['full_name']), $templateCode);
@@ -600,16 +817,19 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(term)%%>', safe_html($urow['term']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(term)%%>', html_attr($row['term']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(term)%%>', urlencode($urow['term']), $templateCode);
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(total_fees)%%>', safe_html($urow['total_fees']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(total_fees)%%>', html_attr($row['total_fees']), $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(total_fees)%%>', urlencode($urow['total_fees']), $templateCode);
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(amount_received)%%>', safe_html($urow['amount_received']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(amount_received)%%>', html_attr($row['amount_received']), $templateCode);
+		if( $dvprint) $templateCode = str_replace('<%%VALUE(fees_code)%%>', safe_html($urow['fees_code']), $templateCode);
+		if(!$dvprint) $templateCode = str_replace('<%%VALUE(fees_code)%%>', html_attr($row['fees_code']), $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(fees_code)%%>', urlencode($urow['fees_code']), $templateCode);
+		$templateCode = str_replace('<%%VALUE(amount_received)%%>', safe_html($urow['amount_received']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(amount_received)%%>', urlencode($urow['amount_received']), $templateCode);
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(balance)%%>', safe_html($urow['balance']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(balance)%%>', html_attr($row['balance']), $templateCode);
+		$templateCode = str_replace('<%%VALUE(balance)%%>', safe_html($urow['balance']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(balance)%%>', urlencode($urow['balance']), $templateCode);
+		$templateCode = str_replace('<%%CHECKED(cleared)%%>', ($row['cleared'] ? "checked" : ""), $templateCode);
+		$templateCode = str_replace('<%%VALUE(structure)%%>', safe_html($urow['structure']), $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(structure)%%>', urlencode($urow['structure']), $templateCode);
 	} else {
+		$templateCode = str_replace('<%%VALUE(date)%%>', '1', $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(date)%%>', urlencode('1'), $templateCode);
 		$templateCode = str_replace('<%%VALUE(stid)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(stid)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(full_name)%%>', '', $templateCode);
@@ -618,12 +838,15 @@ function enrollment_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, 
 		$templateCode = str_replace('<%%URLVALUE(class)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(term)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(term)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%VALUE(total_fees)%%>', '0.00', $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(total_fees)%%>', urlencode('0.00'), $templateCode);
+		$templateCode = str_replace('<%%VALUE(fees_code)%%>', '', $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(fees_code)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(amount_received)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(amount_received)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(balance)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(balance)%%>', urlencode(''), $templateCode);
+		$templateCode = str_replace('<%%CHECKED(cleared)%%>', '', $templateCode);
+		$templateCode = str_replace('<%%VALUE(structure)%%>', '', $templateCode);
+		$templateCode = str_replace('<%%URLVALUE(structure)%%>', urlencode(''), $templateCode);
 	}
 
 	// process translations

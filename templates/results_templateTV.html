@@ -1,0 +1,10 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the results_init() hook (in hooks/results.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="results-student_name-<%%VALUE(id)%%>" class="results-student_name"><%%SELECT%%><%%VALUE(student_name)%%><%%ENDSELECT%%></td>
+		<td id="results-total_marks-<%%VALUE(id)%%>" class="results-total_marks"><%%SELECT%%><%%VALUE(total_marks)%%><%%ENDSELECT%%></td>
+		<td id="results-result-<%%VALUE(id)%%>" class="results-result text-right"><%%SELECT%%><%%VALUE(result)%%><%%ENDSELECT%%></td>

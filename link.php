@@ -7,6 +7,10 @@
 			'photo' => getUploadDir(''),
 			'primary key' => 'id'
 		],
+		'class_notes' => [
+			'resource' => getUploadDir(''),
+			'primary key' => 'id'
+		],
 	];
 
 	if(!count($p)) getLink();

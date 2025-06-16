@@ -106,9 +106,19 @@
 
 	function get_sql_fields($table_name) {
 		$sql_fields = [
-			'enrollment' => "`enrollment`.`stid` as 'stid', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'full_name', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') as 'year', `enrollment`.`term` as 'term', `enrollment`.`total_fees` as 'total_fees', `enrollment`.`amount_received` as 'amount_received', `enrollment`.`balance` as 'balance'",
+			'enrollment' => "if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'') as 'date', `enrollment`.`stid` as 'stid', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'full_name', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', `enrollment`.`term` as 'term', IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') as 'year', IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') as 'fees_code', `enrollment`.`amount_received` as 'amount_received', `enrollment`.`balance` as 'balance', `enrollment`.`cleared` as 'cleared', `enrollment`.`structure` as 'structure'",
 			'classes' => "`classes`.`id` as 'id', `classes`.`class` as 'class', `classes`.`year` as 'year'",
 			'registration' => "`registration`.`id` as 'id', if(`registration`.`date_of_joining`,date_format(`registration`.`date_of_joining`,'%m/%d/%Y'),'') as 'date_of_joining', `registration`.`photo` as 'photo', `registration`.`full_name` as 'full_name', if(`registration`.`date_of_birth`,date_format(`registration`.`date_of_birth`,'%m/%d/%Y'),'') as 'date_of_birth', `registration`.`age` as 'age', `registration`.`gender` as 'gender', `registration`.`parent_gurdian` as 'parent_gurdian', CONCAT_WS('-', LEFT(`registration`.`contact`,3), MID(`registration`.`contact`,4,3), RIGHT(`registration`.`contact`,4)) as 'contact', `registration`.`address` as 'address'",
+			'fees_structure' => "`fees_structure`.`id` as 'id', `fees_structure`.`code` as 'code', `fees_structure`.`fees` as 'fees', `fees_structure`.`description` as 'description'",
+			'fees_payments' => "`fees_payments`.`id` as 'id', if(`fees_payments`.`date`,date_format(`fees_payments`.`date`,'%m/%d/%Y'),'') as 'date', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', IF(    CHAR_LENGTH(`enrollment1`.`term`), CONCAT_WS('',   `enrollment1`.`term`), '') as 'term', `fees_payments`.`amount_received` as 'amount_received', `fees_payments`.`received_from` as 'received_from'",
+			'clearance_tickets' => "`clearance_tickets`.`c_id` as 'c_id', if(`clearance_tickets`.`date`,date_format(`clearance_tickets`.`date`,'%m/%d/%Y'),'') as 'date', `clearance_tickets`.`full_name` as 'full_name', `clearance_tickets`.`class` as 'class', `clearance_tickets`.`term` as 'term'",
+			'subjects' => "`subjects`.`sub_id` as 'sub_id', `subjects`.`subject` as 'subject'",
+			'staff' => "`staff`.`id` as 'id', `staff`.`staff_id` as 'staff_id', `staff`.`full_name` as 'full_name', `staff`.`contact` as 'contact', IF(    CHAR_LENGTH(`subjects1`.`subject`), CONCAT_WS('',   `subjects1`.`subject`), '') as 'subject', if(`staff`.`date_of_joining`,date_format(`staff`.`date_of_joining`,'%m/%d/%Y'),'') as 'date_of_joining', if(`staff`.`contract_ends`,date_format(`staff`.`contract_ends`,'%m/%d/%Y'),'') as 'contract_ends'",
+			'class_notes' => "`class_notes`.`id` as 'id', IF(    CHAR_LENGTH(`subjects1`.`subject`), CONCAT_WS('',   `subjects1`.`subject`), '') as 'subject', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', `class_notes`.`term` as 'term', `class_notes`.`topics` as 'topics', `class_notes`.`resource` as 'resource'",
+			'assessments' => "`assessments`.`id` as 'id', IF(    CHAR_LENGTH(`classes1`.`class`) || CHAR_LENGTH(`enrollment1`.`term`), CONCAT_WS('',   `classes1`.`class`, '-', `enrollment1`.`term`), '') as 'class', `assessments`.`total_marks` as 'total_marks', IF(    CHAR_LENGTH(`staff1`.`full_name`), CONCAT_WS('',   `staff1`.`full_name`), '') as 'teacher', IF(    CHAR_LENGTH(`subjects1`.`subject`), CONCAT_WS('',   `subjects1`.`subject`), '') as 'subject', `assessments`.`avg_performance` as 'avg_performance', `assessments`.`highest_mark` as 'highest_mark', `assessments`.`lowest_mark` as 'lowest_mark', if(`assessments`.`date`,date_format(`assessments`.`date`,'%m/%d/%Y'),'') as 'date'",
+			'results' => "`results`.`id` as 'id', IF(    CHAR_LENGTH(`assessments1`.`id`), CONCAT_WS('',   `assessments1`.`id`), '') as 'assess', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student_name', IF(    CHAR_LENGTH(`assessments1`.`total_marks`), CONCAT_WS('',   `assessments1`.`total_marks`), '') as 'total_marks', `results`.`result` as 'result'",
+			'exams' => "`exams`.`exm_id` as 'exm_id', IF(    CHAR_LENGTH(`classes1`.`class`) || CHAR_LENGTH(`enrollment1`.`term`), CONCAT_WS('',   `classes1`.`class`, '-', `enrollment1`.`term`), '') as 'class', `exams`.`total_marks` as 'total_marks', `exams`.`teacher` as 'teacher', IF(    CHAR_LENGTH(`subjects1`.`subject`), CONCAT_WS('',   `subjects1`.`subject`), '') as 'subject', `exams`.`avg_performance` as 'avg_performance', `exams`.`highest_mark` as 'highest_mark', `exams`.`lowest_mark` as 'lowest_mark', if(`exams`.`date`,date_format(`exams`.`date`,'%m/%d/%Y'),'') as 'date'",
+			'rizalts' => "`rizalts`.`id` as 'id', IF(    CHAR_LENGTH(`exams1`.`exm_id`), CONCAT_WS('',   `exams1`.`exm_id`), '') as 'exm_id', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student_name', IF(    CHAR_LENGTH(`exams1`.`total_marks`), CONCAT_WS('',   `exams1`.`total_marks`), '') as 'total_marks', `rizalts`.`result` as 'result'",
 		];
 
 		if(isset($sql_fields[$table_name])) return $sql_fields[$table_name];
@@ -120,15 +130,35 @@
 
 	function get_sql_from($table_name, $skip_permissions = false, $skip_joins = false, $lower_permissions = false) {
 		$sql_from = [
-			'enrollment' => "`enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` ",
+			'enrollment' => "`enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ",
 			'classes' => "`classes` ",
 			'registration' => "`registration` ",
+			'fees_structure' => "`fees_structure` ",
+			'fees_payments' => "`fees_payments` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`fees_payments`.`student` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` ",
+			'clearance_tickets' => "`clearance_tickets` ",
+			'subjects' => "`subjects` ",
+			'staff' => "`staff` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`staff`.`subject` ",
+			'class_notes' => "`class_notes` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`class_notes`.`subject` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`class_notes`.`class` ",
+			'assessments' => "`assessments` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`assessments`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `staff` as staff1 ON `staff1`.`id`=`assessments`.`teacher` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`assessments`.`subject` ",
+			'results' => "`results` LEFT JOIN `assessments` as assessments1 ON `assessments1`.`id`=`results`.`assess` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`results`.`student_name` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` ",
+			'exams' => "`exams` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`exams`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`exams`.`subject` ",
+			'rizalts' => "`rizalts` LEFT JOIN `exams` as exams1 ON `exams1`.`exm_id`=`rizalts`.`exm_id` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`rizalts`.`student_name` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` ",
 		];
 
 		$pkey = [
 			'enrollment' => 'stid',
 			'classes' => 'id',
 			'registration' => 'id',
+			'fees_structure' => 'id',
+			'fees_payments' => 'id',
+			'clearance_tickets' => 'c_id',
+			'subjects' => 'sub_id',
+			'staff' => 'id',
+			'class_notes' => 'id',
+			'assessments' => 'id',
+			'results' => 'id',
+			'exams' => 'exm_id',
+			'rizalts' => 'id',
 		];
 
 		if(!isset($sql_from[$table_name])) return false;
@@ -179,14 +209,17 @@
 		/* array of tables and their fields, with default values (or empty), excluding automatic values */
 		$defaults = [
 			'enrollment' => [
+				'date' => '1',
 				'stid' => '',
 				'full_name' => '',
 				'class' => '',
-				'year' => '',
 				'term' => '',
-				'total_fees' => '0.00',
+				'year' => '',
+				'fees_code' => '',
 				'amount_received' => '',
 				'balance' => '',
+				'cleared' => '',
+				'structure' => '',
 			],
 			'classes' => [
 				'id' => '',
@@ -204,6 +237,85 @@
 				'parent_gurdian' => '',
 				'contact' => '',
 				'address' => '',
+			],
+			'fees_structure' => [
+				'id' => '',
+				'code' => '',
+				'fees' => '0.00',
+				'description' => '',
+			],
+			'fees_payments' => [
+				'id' => '',
+				'date' => '1',
+				'student' => '',
+				'class' => '',
+				'term' => '',
+				'amount_received' => '',
+				'received_from' => '',
+			],
+			'clearance_tickets' => [
+				'c_id' => '',
+				'date' => '1',
+				'full_name' => '',
+				'class' => '',
+				'term' => '',
+			],
+			'subjects' => [
+				'sub_id' => '',
+				'subject' => '',
+			],
+			'staff' => [
+				'id' => '',
+				'staff_id' => 'Em_',
+				'full_name' => '',
+				'contact' => '',
+				'subject' => '',
+				'date_of_joining' => '',
+				'contract_ends' => '',
+			],
+			'class_notes' => [
+				'id' => '',
+				'subject' => '',
+				'class' => '',
+				'term' => '',
+				'topics' => '',
+				'resource' => '',
+			],
+			'assessments' => [
+				'id' => '',
+				'class' => '',
+				'total_marks' => '',
+				'teacher' => '',
+				'subject' => '',
+				'avg_performance' => '',
+				'highest_mark' => '',
+				'lowest_mark' => '',
+				'date' => '1',
+			],
+			'results' => [
+				'id' => '',
+				'assess' => '',
+				'student_name' => '',
+				'total_marks' => '',
+				'result' => '',
+			],
+			'exams' => [
+				'exm_id' => '',
+				'class' => '',
+				'total_marks' => '',
+				'teacher' => '',
+				'subject' => '',
+				'avg_performance' => '',
+				'highest_mark' => '',
+				'lowest_mark' => '',
+				'date' => '1',
+			],
+			'rizalts' => [
+				'id' => '',
+				'exm_id' => '',
+				'student_name' => '',
+				'total_marks' => '',
+				'result' => '',
 			],
 		];
 
@@ -839,7 +951,7 @@
 		if(is_array($arrTables)) {
 			foreach($arrTables as $tn => $tc) {
 				/* ---- list of tables where hide link in nav menu is set ---- */
-				$tChkHL = array_search($tn, []);
+				$tChkHL = array_search($tn, ['fees_payments','results','rizalts']);
 
 				/* ---- list of tables where filter first is set ---- */
 				$tChkFF = array_search($tn, []);
@@ -898,7 +1010,7 @@ EOT;
 
 		$css_links = <<<EOT
 
-			<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/paper.css">
+			<link rel="stylesheet" href="{$prepend_path}resources/initializr/css/bootstrap.css">
 			<link rel="stylesheet" href="{$prepend_path}resources/lightbox/css/lightbox.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/select2/select2.css" media="screen">
 			<link rel="stylesheet" href="{$prepend_path}resources/timepicker/bootstrap-timepicker.min.css" media="screen">

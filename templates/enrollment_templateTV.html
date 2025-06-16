@@ -5,10 +5,11 @@
 <!-- add the following to the enrollment_init() hook (in hooks/enrollment.php file) -->
 <!--     $options->ShowTableHeader = 0;     -->
 
+		<td id="enrollment-date-<%%VALUE(stid)%%>" class="enrollment-date"><%%SELECT%%><%%VALUE(date)%%><%%ENDSELECT%%></td>
+		<td id="enrollment-stid-<%%VALUE(stid)%%>" class="enrollment-stid"><%%SELECT%%><%%VALUE(stid)%%><%%ENDSELECT%%></td>
 		<td id="enrollment-full_name-<%%VALUE(stid)%%>" class="enrollment-full_name"><%%SELECT%%><%%VALUE(full_name)%%><%%ENDSELECT%%></td>
 		<td id="enrollment-class-<%%VALUE(stid)%%>" class="enrollment-class"><%%SELECT%%><%%VALUE(class)%%><%%ENDSELECT%%></td>
-		<td id="enrollment-year-<%%VALUE(stid)%%>" class="enrollment-year"><%%SELECT%%><%%VALUE(year)%%><%%ENDSELECT%%></td>
 		<td id="enrollment-term-<%%VALUE(stid)%%>" class="enrollment-term"><%%SELECT%%><%%VALUE(term)%%><%%ENDSELECT%%></td>
-		<td id="enrollment-total_fees-<%%VALUE(stid)%%>" class="enrollment-total_fees text-right"><%%SELECT%%><%%VALUE(total_fees)%%><%%ENDSELECT%%></td>
-		<td id="enrollment-amount_received-<%%VALUE(stid)%%>" class="enrollment-amount_received text-right"><%%SELECT%%><%%VALUE(amount_received)%%><%%ENDSELECT%%></td>
-		<td id="enrollment-balance-<%%VALUE(stid)%%>" class="enrollment-balance text-right"><%%SELECT%%><%%VALUE(balance)%%><%%ENDSELECT%%></td>
+		<td id="enrollment-amount_received-<%%VALUE(stid)%%>" class="enrollment-amount_received"><%%SELECT%%><%%VALUE(amount_received)%%><%%ENDSELECT%%></td>
+		<td id="enrollment-balance-<%%VALUE(stid)%%>" class="enrollment-balance"><%%SELECT%%><%%VALUE(balance)%%><%%ENDSELECT%%></td>
+		<td id="enrollment-cleared-<%%VALUE(stid)%%>" class="enrollment-cleared"><%%SELECT%%><%%VALUE(cleared)%%><%%ENDSELECT%%></td>

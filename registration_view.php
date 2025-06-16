@@ -58,15 +58,15 @@
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
-		"`registration`.`id`" => "ID",
+		"`registration`.`id`" => "Id",
 		"`registration`.`date_of_joining`" => "Date of joining",
 		"`registration`.`full_name`" => "Full name",
 		"`registration`.`date_of_birth`" => "Date of birth",
 		"`registration`.`age`" => "Age",
 		"`registration`.`gender`" => "Gender",
-		"`registration`.`parent_gurdian`" => "Parent /Gurdian",
+		"`registration`.`parent_gurdian`" => "Parent gurdian",
 		"`registration`.`contact`" => "Contact",
-		"`registration`.`address`" => "Address/Residence",
+		"`registration`.`address`" => "Address",
 	];
 
 	// Fields that can be quick searched
@@ -97,7 +97,7 @@
 	$x->AllowUpdate = $perm['edit'];
 	$x->SeparateDV = 1;
 	$x->AllowDeleteOfParents = 0;
-	$x->AllowFilters = (getLoggedAdmin() !== false);
+	$x->AllowFilters = 1;
 	$x->AllowSavingFilters = (getLoggedAdmin() !== false);
 	$x->AllowSorting = 1;
 	$x->AllowNavigation = 1;
@@ -109,13 +109,13 @@
 	$x->QuickSearchText = $Translation['quick search'];
 	$x->ScriptFileName = 'registration_view.php';
 	$x->TableTitle = 'Registration';
-	$x->TableIcon = 'table.gif';
+	$x->TableIcon = 'resources/table_icons/user_add.png';
 	$x->PrimaryKey = '`registration`.`id`';
 
-	$x->ColWidth = [150, 150, 150, 150, 150, 150, ];
-	$x->ColCaption = ['Date of joining', 'Photo', 'Full name', 'Date of birth', 'Age', 'Gender', ];
-	$x->ColFieldName = ['date_of_joining', 'photo', 'full_name', 'date_of_birth', 'age', 'gender', ];
-	$x->ColNumber  = [2, 3, 4, 5, 6, 7, ];
+	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, ];
+	$x->ColCaption = ['Id', 'Date of joining', 'Photo', 'Full name', 'Date of birth', 'Age', 'Gender', 'Parent gurdian', 'Contact', 'Address', ];
+	$x->ColFieldName = ['id', 'date_of_joining', 'photo', 'full_name', 'date_of_birth', 'age', 'gender', 'parent_gurdian', 'contact', 'address', ];
+	$x->ColNumber  = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/registration_templateTV.html';

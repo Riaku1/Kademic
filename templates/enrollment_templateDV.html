@@ -9,19 +9,34 @@
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
+			<input type="hidden" id="fees_payments_hclink" value="fees_payments_view.php?filterer_student=<%%URLVALUE(stid)%%>&<%%EMBEDDED%%>">
+			<input type="hidden" id="assessments_hclink" value="assessments_view.php?filterer_class=<%%URLVALUE(stid)%%>&<%%EMBEDDED%%>">
+			<input type="hidden" id="results_hclink" value="results_view.php?filterer_student_name=<%%URLVALUE(stid)%%>&<%%EMBEDDED%%>">
+			<input type="hidden" id="exams_hclink" value="exams_view.php?filterer_class=<%%URLVALUE(stid)%%>&<%%EMBEDDED%%>">
+			<input type="hidden" id="rizalts_hclink" value="rizalts_view.php?filterer_student_name=<%%URLVALUE(stid)%%>&<%%EMBEDDED%%>">
 			<div class="clearfix"></div>
 		</div>
 	</div>
+	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
 		<div class="col-md-8 col-lg-10" id="enrollment_dv_form">
 			<fieldset class="form-horizontal">
 
-				<!-- Field: StID -->
+				<!-- Field: Date -->
+				<div class="form-group enrollment-date">
+					<hr class="hidden-md hidden-lg">
+					<label class="control-label col-lg-3" for="date-mm">Date</label>
+					<div class="col-lg-9">
+						<%%COMBO(date)%%>
+					</div>
+				</div>
+
+				<!-- Field: Stid -->
 				<div class="form-group enrollment-stid">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="stid">StID</label>
+					<label class="control-label col-lg-3">Stid</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="stid"><%%VALUE(stid)%%></div>
 					</div>
@@ -39,55 +54,55 @@
 				<!-- Field: Class -->
 				<div class="form-group enrollment-class">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="class" data-parent_link="view_parent_modal">Class<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#class-description"></i></label>
+					<label class="control-label col-lg-3" for="class" data-parent_link="view_parent_modal">Class<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
-						<span class="help-block bspacer-xs collapse" id="class-description"><div class="alert alert-info bspacer-xs"><b>This field enrolls a pupil to a new class</b></div></span>
 						<div class="lookup-flex"><%%COMBO(class)%%><%%PLINK(class)%%><%%ADDNEW(classes)%%></div>
-					</div>
-				</div>
-
-				<!-- Field: Year -->
-				<div class="form-group enrollment-year">
-					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3">Year</label>
-					<div class="col-lg-9">
-						<div class="form-control-static" id="year"></div>
 					</div>
 				</div>
 
 				<!-- Field: Term -->
 				<div class="form-group enrollment-term">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3">Term</label>
+					<label class="control-label col-lg-3">Term<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<%%COMBO(term)%%>
 					</div>
 				</div>
 
-				<!-- Field: Total fees -->
-				<div class="form-group enrollment-total_fees">
+				<!-- Field: Fees code -->
+				<div class="form-group enrollment-fees_code">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="total_fees">Total fees</label>
+					<label class="control-label col-lg-3" for="fees_code" data-parent_link="view_parent_modal">Fees code</label>
 					<div class="col-lg-9">
-						<input maxlength="13" type="text" class="form-control" name="total_fees" id="total_fees" value="<%%VALUE(total_fees)%%>">
+						<div class="lookup-flex"><%%COMBO(fees_code)%%><%%PLINK(fees_code)%%><%%ADDNEW(fees_structure)%%></div>
 					</div>
 				</div>
 
 				<!-- Field: Amount received -->
 				<div class="form-group enrollment-amount_received">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="amount_received">Amount received</label>
+					<label class="control-label col-lg-3">Amount received</label>
 					<div class="col-lg-9">
-						<input type="text" class="form-control" name="amount_received" id="amount_received" value="<%%VALUE(amount_received)%%>">
+						<div class="form-control-static" id="amount_received"><%%VALUE(amount_received)%%></div>
 					</div>
 				</div>
 
 				<!-- Field: Balance -->
 				<div class="form-group enrollment-balance">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="balance">Balance</label>
+					<label class="control-label col-lg-3">Balance</label>
 					<div class="col-lg-9">
-						<input type="text" class="form-control" name="balance" id="balance" value="<%%VALUE(balance)%%>">
+						<div class="form-control-static" id="balance"><%%VALUE(balance)%%></div>
+					</div>
+				</div>
+
+				<!-- Field: Cleared -->
+				<div class="form-group enrollment-cleared">
+					<hr class="hidden-md hidden-lg">
+					<div class="col-lg-offset-3 col-lg-9">
+						<div class="checkbox">
+							<label for="cleared"><input type="checkbox" name="cleared" id="cleared" value="1" disabled <%%CHECKED(cleared)%%>> Cleared</label>
+						</div>
 					</div>
 				</div>
 
@@ -113,6 +128,17 @@
 		</div>
 	</div>
 
+	<input type="hidden" name="year" value="<%%VALUE(year)%%>">
+
+	<!-- child records -->
+	<hr>
+	<div class="row">
+		<div class="col-lg-10 col-lg-offset-1">
+			<div id="enrollment-children" class="children-tabs">
+				<div class="text-center"><i class="glyphicon glyphicon-refresh loop-rotate"></i> <%%TRANSLATION(Loading ...)%%></div>
+			</div>
+		</div>
+	</div>
 
 </div><!-- /div class="panel-body" -->
 	<script>
@@ -132,27 +158,9 @@
 			/* enable DV action buttons to float on scrolling down the form */
 			enable_dvab_floating();
 
-			if(!$j('.table_view').length || $j('[name=SelectedID]').val().length) {
-				AppGini.once({
-					condition: function() {
-						return $j('.form-group.enrollment-full_name')
-									.find('.nicEdit-main, .select2-container, input[type=radio]')
-									.length > 0
-								// or read-only DV
-								|| (!$j('#update').length && !$j('#insert').length);
-					},
-					action: function() {
-						$j('#enrollment_dv_container-loading').addClass('hidden');
-						$j('#enrollment_dv_container').removeClass('hidden');
-						AppGini.focusFormElement('enrollment', 'full_name');
-					},
-					timeout:  5000,
-					doActionOnTimeout:  true
-				});
-			} else {
-				$j('#enrollment_dv_container-loading').addClass('hidden');
-				$j('#enrollment_dv_container').removeClass('hidden');
-			}
+			$j('#enrollment_dv_container-loading').addClass('hidden');
+			$j('#enrollment_dv_container').removeClass('hidden');
+			if(!$j('.table_view').length || $j('[name=SelectedID]').val().length) AppGini.focusFormElement('enrollment', 'date');
 
 			$j('form').eq(0).change(function() {
 				if($j(this).data('already_changed')) return;
@@ -162,6 +170,38 @@
 
 			$j('a[href="<%%BASE_UPLOAD_PATH%%>"]').click(function() { return false; });
 
+			if(embedded_mode) {
+				/* hide links to children tables in embedded mode */
+				$j('.detail_view a[id$=_link]').remove();
+
+				/* append embedded mode to all links */
+				var append_embedded = function() {
+					$j('a[href]:not([href^="#"]):not([href^="javascript"]):not([href$="Embedded=1"]):not([href*="link.php?t="]):not([href^="mailto:"]):not([href$=".jpg"]):not([href$=".png"]):not([href$=".gif"])').each(
+						function() {
+							$j(this).attr('href', $j(this).attr('href') + '&Embedded=1');
+						}
+					);
+				}
+				setTimeout(append_embedded, 500);
+				setTimeout(append_embedded, 1500);
+				setTimeout(append_embedded, 2500);
+				setTimeout(append_embedded, 3500);
+			}
+
+			/* when no record is selected ('add new' mode) */
+			if(add_new_mode) {
+				/* hide links to children tables */
+				$j('.detail_view a[id$=_link]').remove();
+			} else {
+				post(
+					'parent-children.php', {
+						ParentTable: 'enrollment',
+						SelectedID: '<%%VALUE(stid)%%>',
+						Operation: 'show-children'
+					},
+					'enrollment-children'
+				);
+			}
 
 			if(true /* !embedded_mode */) {
 				$j('.add_new_parent').click(function() {

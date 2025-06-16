@@ -1,0 +1,15 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the <%%SELECT%%> and <%%ENDSELECT%%> formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the assessments_init() hook (in hooks/assessments.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="assessments-class-<%%VALUE(id)%%>" class="assessments-class"><%%SELECT%%><%%VALUE(class)%%><%%ENDSELECT%%></td>
+		<td id="assessments-total_marks-<%%VALUE(id)%%>" class="assessments-total_marks text-right"><%%SELECT%%><%%VALUE(total_marks)%%><%%ENDSELECT%%></td>
+		<td id="assessments-teacher-<%%VALUE(id)%%>" class="assessments-teacher"><%%SELECT%%><%%VALUE(teacher)%%><%%ENDSELECT%%></td>
+		<td id="assessments-subject-<%%VALUE(id)%%>" class="assessments-subject"><%%SELECT%%><%%VALUE(subject)%%><%%ENDSELECT%%></td>
+		<td id="assessments-avg_performance-<%%VALUE(id)%%>" class="assessments-avg_performance"><%%SELECT%%><%%VALUE(avg_performance)%%><%%ENDSELECT%%></td>
+		<td id="assessments-highest_mark-<%%VALUE(id)%%>" class="assessments-highest_mark"><%%SELECT%%><%%VALUE(highest_mark)%%><%%ENDSELECT%%></td>
+		<td id="assessments-lowest_mark-<%%VALUE(id)%%>" class="assessments-lowest_mark"><%%SELECT%%><%%VALUE(lowest_mark)%%><%%ENDSELECT%%></td>
+		<td id="assessments-date-<%%VALUE(id)%%>" class="assessments-date"><%%SELECT%%><%%VALUE(date)%%><%%ENDSELECT%%></td>

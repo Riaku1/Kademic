@@ -1,0 +1,11 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the fees_payments_init() hook (in hooks/fees_payments.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="fees_payments-date-<%%VALUE(id)%%>" class="fees_payments-date"><%%VALUE(date)%%></td>
+		<td id="fees_payments-student-<%%VALUE(id)%%>" class="fees_payments-student"><%%VALUE(student)%%></td>
+		<td id="fees_payments-amount_received-<%%VALUE(id)%%>" class="fees_payments-amount_received text-right"><%%VALUE(amount_received)%%></td>
+		<td id="fees_payments-received_from-<%%VALUE(id)%%>" class="fees_payments-received_from"><%%VALUE(received_from)%%></td>

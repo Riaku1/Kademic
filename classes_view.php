@@ -37,7 +37,7 @@
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
-		"`classes`.`id`" => "ID",
+		"`classes`.`id`" => "Id",
 		"`classes`.`class`" => "Class",
 		"`classes`.`year`" => "Year",
 	];
@@ -62,7 +62,7 @@
 	$x->AllowMassDelete = (getLoggedAdmin() !== false);
 	$x->AllowInsert = $perm['insert'];
 	$x->AllowUpdate = $perm['edit'];
-	$x->SeparateDV = 1;
+	$x->SeparateDV = 0;
 	$x->AllowDeleteOfParents = 0;
 	$x->AllowFilters = 1;
 	$x->AllowSavingFilters = (getLoggedAdmin() !== false);
@@ -76,10 +76,8 @@
 	$x->QuickSearchText = $Translation['quick search'];
 	$x->ScriptFileName = 'classes_view.php';
 	$x->TableTitle = 'Classes';
-	$x->TableIcon = 'table.gif';
+	$x->TableIcon = 'resources/table_icons/house.png';
 	$x->PrimaryKey = '`classes`.`id`';
-	$x->DefaultSortField = '3';
-	$x->DefaultSortDirection = 'desc';
 
 	$x->ColWidth = [150, 150, ];
 	$x->ColCaption = ['Class', 'Year', ];
@@ -93,8 +91,8 @@
 	$x->TemplateDVP = 'templates/classes_templateDVP.html';
 
 	$x->ShowTableHeader = 1;
-	$x->TVClasses = "";
-	$x->DVClasses = "";
+	$x->TVClasses = "col-lg-4";
+	$x->DVClasses = "col-lg-8";
 	$x->HasCalculatedFields = true;
 	$x->AllowConsoleLog = false;
 	$x->AllowDVNavigation = true;

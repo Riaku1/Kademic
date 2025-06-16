@@ -14,9 +14,9 @@
 
 <div class="panel-body">
 	<fieldset class="form-horizontal">
-		<!-- Field: ID -->
+		<!-- Field: Id -->
 		<div class="form-group registration-id" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">ID</label>
+			<label class="col-xs-3 control-label">Id</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(id)%%></div>
 			</div>
@@ -32,11 +32,7 @@
 		<div class="form-group registration-photo" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Photo</label>
 			<div class="col-xs-9">
-				<div class="form-control-static"><script>
-				var photoSrc1<%%RND1%%>='<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>';
-				var photoSrc2<%%RND1%%>='thumbnail.php?t=registration&f=photo&i=<%%VALUE(photo)%%>&v=dv'
-			</script>
-			<a href="#" onclick="$j('#photoImg<%%RND1%%>').attr('src', ($j('#photoImg<%%RND1%%>').attr('src').search(/thumbnail\.php/) != -1 && photoSrc1<%%RND1%%> != '<%%BASE_UPLOAD_PATH%%>' ? photoSrc1<%%RND1%%> : photoSrc2<%%RND1%%>)); return false;"><img id="photoImg<%%RND1%%>" src="thumbnail.php?t=registration&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></a></div>
+				<div class="form-control-static"><img id="photoImg" src="thumbnail.php?t=registration&f=photo&i=<%%VALUE(photo)%%>&v=dv" class="img-thumbnail"></div>
 			</div>
 		</div>
 		<!-- Field: Full name -->
@@ -67,9 +63,9 @@
 				<div class="form-control-static"><%%COMBOTEXT(gender)%%></div>
 			</div>
 		</div>
-		<!-- Field: Parent /Gurdian -->
+		<!-- Field: Parent gurdian -->
 		<div class="form-group registration-parent_gurdian" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">Parent /Gurdian</label>
+			<label class="col-xs-3 control-label">Parent gurdian</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(parent_gurdian)%%></div>
 			</div>
@@ -81,9 +77,9 @@
 				<div class="form-control-static"><%%VALUE(contact)%%></div>
 			</div>
 		</div>
-		<!-- Field: Address/Residence -->
+		<!-- Field: Address -->
 		<div class="form-group registration-address" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">Address/Residence</label>
+			<label class="col-xs-3 control-label">Address</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(address)%%></div>
 			</div>

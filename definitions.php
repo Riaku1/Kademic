@@ -11,7 +11,7 @@
 	@define('DATABASE', 'mysqli');
 	@define('mysql_charset', 'utf8mb4');
 
-	@define('TIMEZONE', 'Africa/Kampala');
+	@define('TIMEZONE', 'America/New_York');
 
 	@define('datalist_db_encoding', 'UTF-8');
 	@define('datalist_filters_count', 20);

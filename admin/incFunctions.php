@@ -104,21 +104,91 @@
 		$all_tables = [
 			/* ['table_name' => [table props assoc array] */   
 				'enrollment' => [
-					'Caption' => 'Enrolled',
+					'Caption' => 'Enrollment',
 					'Description' => '',
-					'tableIcon' => 'table.gif',
+					'tableIcon' => 'resources/table_icons/user_edit.png',
 					'group' => $tg[0],
 					'homepageShowCount' => 0
 				],
 				'classes' => [
 					'Caption' => 'Classes',
 					'Description' => '',
-					'tableIcon' => 'table.gif',
+					'tableIcon' => 'resources/table_icons/house.png',
 					'group' => $tg[0],
 					'homepageShowCount' => 0
 				],
 				'registration' => [
 					'Caption' => 'Registration',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/user_add.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'fees_structure' => [
+					'Caption' => 'Fees structure and Activities',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/balance.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'fees_payments' => [
+					'Caption' => 'Payments',
+					'Description' => '',
+					'tableIcon' => 'table.gif',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'clearance_tickets' => [
+					'Caption' => 'Clearance tickets',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/tick.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'subjects' => [
+					'Caption' => 'Subjects',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/font_subscript.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'staff' => [
+					'Caption' => 'Staff',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/reseller_programm.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'class_notes' => [
+					'Caption' => 'Class notes',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/books.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'assessments' => [
+					'Caption' => 'Assessments',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/document_prepare.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'results' => [
+					'Caption' => 'Results',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/font_red.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'exams' => [
+					'Caption' => 'Exams',
+					'Description' => '',
+					'tableIcon' => 'resources/table_icons/ask_and_answer.png',
+					'group' => $tg[0],
+					'homepageShowCount' => 0
+				],
+				'rizalts' => [
+					'Caption' => 'Results',
 					'Description' => '',
 					'tableIcon' => 'table.gif',
 					'group' => $tg[0],
@@ -140,9 +210,19 @@
 		$arrAccessTables = [];
 		$arrTables = [
 			/* 'table_name' => ['table caption', 'homepage description', 'icon', 'table group name'] */   
-			'enrollment' => ['Enrolled', '', 'table.gif', 'None'],
-			'classes' => ['Classes', '', 'table.gif', 'None'],
-			'registration' => ['Registration', '', 'table.gif', 'None'],
+			'enrollment' => ['Enrollment', '', 'resources/table_icons/user_edit.png', 'None'],
+			'classes' => ['Classes', '', 'resources/table_icons/house.png', 'None'],
+			'registration' => ['Registration', '', 'resources/table_icons/user_add.png', 'None'],
+			'fees_structure' => ['Fees structure and Activities', '', 'resources/table_icons/balance.png', 'None'],
+			'fees_payments' => ['Payments', '', 'table.gif', 'None'],
+			'clearance_tickets' => ['Clearance tickets', '', 'resources/table_icons/tick.png', 'None'],
+			'subjects' => ['Subjects', '', 'resources/table_icons/font_subscript.png', 'None'],
+			'staff' => ['Staff', '', 'resources/table_icons/reseller_programm.png', 'None'],
+			'class_notes' => ['Class notes', '', 'resources/table_icons/books.png', 'None'],
+			'assessments' => ['Assessments', '', 'resources/table_icons/document_prepare.png', 'None'],
+			'results' => ['Results', '', 'resources/table_icons/font_red.png', 'None'],
+			'exams' => ['Exams', '', 'resources/table_icons/ask_and_answer.png', 'None'],
+			'rizalts' => ['Results', '', 'table.gif', 'None'],
 		];
 		if($skip_authentication || getLoggedAdmin()) return $arrTables;
 
@@ -945,10 +1025,17 @@
 			/* application schema as created in AppGini */
 			$schema = [
 				'enrollment' => [
-					'stid' => [
-						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+					'date' => [
+						'appgini' => "DATE NULL",
 						'info' => [
-							'caption' => 'StID',
+							'caption' => 'Date',
+							'description' => '',
+						],
+					],
+					'stid' => [
+						'appgini' => "INT(35) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'Stid',
 							'description' => '',
 						],
 					],
@@ -960,44 +1047,58 @@
 						],
 					],
 					'class' => [
-						'appgini' => "INT UNSIGNED NOT NULL",
+						'appgini' => "INT(4) UNSIGNED NOT NULL",
 						'info' => [
 							'caption' => 'Class',
-							'description' => '<b>This field enrolls a pupil to a new class</b>',
-						],
-					],
-					'year' => [
-						'appgini' => "INT UNSIGNED NULL",
-						'info' => [
-							'caption' => 'Year',
 							'description' => '',
 						],
 					],
 					'term' => [
-						'appgini' => "VARCHAR(40) NULL",
+						'appgini' => "VARCHAR(40) NOT NULL",
 						'info' => [
 							'caption' => 'Term',
 							'description' => '',
 						],
 					],
-					'total_fees' => [
-						'appgini' => "DECIMAL(10,2) NULL DEFAULT '0.00'",
+					'year' => [
+						'appgini' => "INT(4) UNSIGNED NULL",
 						'info' => [
-							'caption' => 'Total fees',
+							'caption' => 'Year',
+							'description' => '',
+						],
+					],
+					'fees_code' => [
+						'appgini' => "INT(13) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Fees code',
 							'description' => '',
 						],
 					],
 					'amount_received' => [
-						'appgini' => "INT NULL",
+						'appgini' => "INT(11) NULL",
 						'info' => [
 							'caption' => 'Amount received',
 							'description' => '',
 						],
 					],
 					'balance' => [
-						'appgini' => "INT NULL",
+						'appgini' => "INT(11) NULL",
 						'info' => [
 							'caption' => 'Balance',
+							'description' => '',
+						],
+					],
+					'cleared' => [
+						'appgini' => "VARCHAR(10) NULL",
+						'info' => [
+							'caption' => 'Cleared',
+							'description' => '',
+						],
+					],
+					'structure' => [
+						'appgini' => "INT(9) NULL",
+						'info' => [
+							'caption' => 'Structure',
 							'description' => '',
 						],
 					],
@@ -1006,7 +1107,7 @@
 					'id' => [
 						'appgini' => "INT(4) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
 						'info' => [
-							'caption' => 'ID',
+							'caption' => 'Id',
 							'description' => '',
 						],
 					],
@@ -1018,7 +1119,7 @@
 						],
 					],
 					'year' => [
-						'appgini' => "INT NULL",
+						'appgini' => "INT(11) NULL",
 						'info' => [
 							'caption' => 'Year',
 							'description' => '',
@@ -1029,7 +1130,7 @@
 					'id' => [
 						'appgini' => "INT(35) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
 						'info' => [
-							'caption' => 'ID',
+							'caption' => 'Id',
 							'description' => '',
 						],
 					],
@@ -1041,10 +1142,10 @@
 						],
 					],
 					'photo' => [
-						'appgini' => "VARCHAR(40) NULL",
+						'appgini' => "VARCHAR(40) NOT NULL",
 						'info' => [
 							'caption' => 'Photo',
-							'description' => 'Maximum file size allowed: 100 KB.<br>Allowed file types: jpg, jpeg, gif, png, webp',
+							'description' => 'Maximum file size allowed: 7000 KB.<br>Allowed file types: jpg, jpeg, gif, png, webp',
 						],
 					],
 					'full_name' => [
@@ -1062,7 +1163,7 @@
 						],
 					],
 					'age' => [
-						'appgini' => "INT NULL",
+						'appgini' => "INT(11) NULL",
 						'info' => [
 							'caption' => 'Age',
 							'description' => '',
@@ -1078,12 +1179,12 @@
 					'parent_gurdian' => [
 						'appgini' => "VARCHAR(40) NOT NULL",
 						'info' => [
-							'caption' => 'Parent /Gurdian',
+							'caption' => 'Parent gurdian',
 							'description' => '',
 						],
 					],
 					'contact' => [
-						'appgini' => "INT NOT NULL",
+						'appgini' => "INT(11) NOT NULL",
 						'info' => [
 							'caption' => 'Contact',
 							'description' => '',
@@ -1092,7 +1193,440 @@
 					'address' => [
 						'appgini' => "VARCHAR(40) NOT NULL",
 						'info' => [
-							'caption' => 'Address/Residence',
+							'caption' => 'Address',
+							'description' => '',
+						],
+					],
+				],
+				'fees_structure' => [
+					'id' => [
+						'appgini' => "INT(13) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'code' => [
+						'appgini' => "VARCHAR(3) NOT NULL UNIQUE",
+						'info' => [
+							'caption' => 'Code',
+							'description' => '',
+						],
+					],
+					'fees' => [
+						'appgini' => "DECIMAL(10,2) NOT NULL DEFAULT '0.00'",
+						'info' => [
+							'caption' => 'Fees',
+							'description' => '',
+						],
+					],
+					'description' => [
+						'appgini' => "TEXT NULL",
+						'info' => [
+							'caption' => 'Description',
+							'description' => '',
+						],
+					],
+				],
+				'fees_payments' => [
+					'id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'date' => [
+						'appgini' => "DATE NULL",
+						'info' => [
+							'caption' => 'Date',
+							'description' => '',
+						],
+					],
+					'student' => [
+						'appgini' => "INT(10) UNSIGNED NOT NULL",
+						'info' => [
+							'caption' => 'Student name',
+							'description' => '',
+						],
+					],
+					'class' => [
+						'appgini' => "INT(10) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Class',
+							'description' => '',
+						],
+					],
+					'term' => [
+						'appgini' => "INT(10) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Term',
+							'description' => '',
+						],
+					],
+					'amount_received' => [
+						'appgini' => "INT(7) NOT NULL",
+						'info' => [
+							'caption' => 'Amount received',
+							'description' => '',
+						],
+					],
+					'received_from' => [
+						'appgini' => "VARCHAR(25) NOT NULL",
+						'info' => [
+							'caption' => 'Received from',
+							'description' => '',
+						],
+					],
+				],
+				'clearance_tickets' => [
+					'c_id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'Clearance ID',
+							'description' => '',
+						],
+					],
+					'date' => [
+						'appgini' => "DATE NULL",
+						'info' => [
+							'caption' => 'Date',
+							'description' => '',
+						],
+					],
+					'full_name' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Full name',
+							'description' => '',
+						],
+					],
+					'class' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Class',
+							'description' => '',
+						],
+					],
+					'term' => [
+						'appgini' => "VARCHAR(4) NULL",
+						'info' => [
+							'caption' => 'Term',
+							'description' => '',
+						],
+					],
+				],
+				'subjects' => [
+					'sub_id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'Subject ID',
+							'description' => '',
+						],
+					],
+					'subject' => [
+						'appgini' => "VARCHAR(40) NOT NULL",
+						'info' => [
+							'caption' => 'Subject',
+							'description' => '',
+						],
+					],
+				],
+				'staff' => [
+					'id' => [
+						'appgini' => "INT(35) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'sta_id',
+							'description' => '',
+						],
+					],
+					'staff_id' => [
+						'appgini' => "VARCHAR(7) NOT NULL UNIQUE DEFAULT 'Em_'",
+						'info' => [
+							'caption' => 'Staff id',
+							'description' => '',
+						],
+					],
+					'full_name' => [
+						'appgini' => "VARCHAR(40) NOT NULL",
+						'info' => [
+							'caption' => 'Full name',
+							'description' => '',
+						],
+					],
+					'contact' => [
+						'appgini' => "VARCHAR(40) NOT NULL",
+						'info' => [
+							'caption' => 'Contact',
+							'description' => '',
+						],
+					],
+					'subject' => [
+						'appgini' => "INT UNSIGNED NOT NULL",
+						'info' => [
+							'caption' => 'Subject',
+							'description' => '',
+						],
+					],
+					'date_of_joining' => [
+						'appgini' => "DATE NOT NULL",
+						'info' => [
+							'caption' => 'Date of joining',
+							'description' => '',
+						],
+					],
+					'contract_ends' => [
+						'appgini' => "DATE NOT NULL",
+						'info' => [
+							'caption' => 'Contract ends',
+							'description' => '',
+						],
+					],
+				],
+				'class_notes' => [
+					'id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'subject' => [
+						'appgini' => "INT UNSIGNED NOT NULL",
+						'info' => [
+							'caption' => 'Subject',
+							'description' => '',
+						],
+					],
+					'class' => [
+						'appgini' => "INT(4) UNSIGNED NOT NULL",
+						'info' => [
+							'caption' => 'Class',
+							'description' => '',
+						],
+					],
+					'term' => [
+						'appgini' => "VARCHAR(3) NOT NULL",
+						'info' => [
+							'caption' => 'Term',
+							'description' => '',
+						],
+					],
+					'topics' => [
+						'appgini' => "TEXT NOT NULL",
+						'info' => [
+							'caption' => 'Topics',
+							'description' => '',
+						],
+					],
+					'resource' => [
+						'appgini' => "VARCHAR(40) NOT NULL",
+						'info' => [
+							'caption' => 'Resource',
+							'description' => 'Maximum file size allowed: 20000 KB.<br>Allowed file types: ppt, pptx, pptm, pdf, ppsx, ppsm, pps, odp',
+						],
+					],
+				],
+				'assessments' => [
+					'id' => [
+						'appgini' => "INT(3) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'class' => [
+						'appgini' => "INT(35) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Class',
+							'description' => '',
+						],
+					],
+					'total_marks' => [
+						'appgini' => "INT NULL",
+						'info' => [
+							'caption' => 'Total marks',
+							'description' => '',
+						],
+					],
+					'teacher' => [
+						'appgini' => "INT(35) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Teacher',
+							'description' => '',
+						],
+					],
+					'subject' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Result',
+							'description' => '',
+						],
+					],
+					'avg_performance' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Avg performance',
+							'description' => '',
+						],
+					],
+					'highest_mark' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Highest mark',
+							'description' => '',
+						],
+					],
+					'lowest_mark' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Lowest mark',
+							'description' => '',
+						],
+					],
+					'date' => [
+						'appgini' => "DATE NULL",
+						'info' => [
+							'caption' => 'Date',
+							'description' => '',
+						],
+					],
+				],
+				'results' => [
+					'id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'assess' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Assess',
+							'description' => '',
+						],
+					],
+					'student_name' => [
+						'appgini' => "INT(35) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Student name',
+							'description' => '',
+						],
+					],
+					'total_marks' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Total marks',
+							'description' => '',
+						],
+					],
+					'result' => [
+						'appgini' => "INT NULL",
+						'info' => [
+							'caption' => 'Result',
+							'description' => '',
+						],
+					],
+				],
+				'exams' => [
+					'exm_id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'class' => [
+						'appgini' => "INT(35) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Class',
+							'description' => '',
+						],
+					],
+					'total_marks' => [
+						'appgini' => "INT NULL",
+						'info' => [
+							'caption' => 'Total marks',
+							'description' => '',
+						],
+					],
+					'teacher' => [
+						'appgini' => "VARCHAR(40) NULL",
+						'info' => [
+							'caption' => 'Teacher',
+							'description' => '',
+						],
+					],
+					'subject' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Subject',
+							'description' => '',
+						],
+					],
+					'avg_performance' => [
+						'appgini' => "INT(3) NULL",
+						'info' => [
+							'caption' => 'Avg performance',
+							'description' => '',
+						],
+					],
+					'highest_mark' => [
+						'appgini' => "INT(3) NULL",
+						'info' => [
+							'caption' => 'Highest mark',
+							'description' => '',
+						],
+					],
+					'lowest_mark' => [
+						'appgini' => "INT(3) NULL",
+						'info' => [
+							'caption' => 'Lowest mark',
+							'description' => '',
+						],
+					],
+					'date' => [
+						'appgini' => "DATE NULL",
+						'info' => [
+							'caption' => 'Date',
+							'description' => '',
+						],
+					],
+				],
+				'rizalts' => [
+					'id' => [
+						'appgini' => "INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
+						'info' => [
+							'caption' => 'ID',
+							'description' => '',
+						],
+					],
+					'exm_id' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Exm id',
+							'description' => '',
+						],
+					],
+					'student_name' => [
+						'appgini' => "INT(35) UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Student name',
+							'description' => '',
+						],
+					],
+					'total_marks' => [
+						'appgini' => "INT UNSIGNED NULL",
+						'info' => [
+							'caption' => 'Total marks',
+							'description' => '',
+						],
+					],
+					'result' => [
+						'appgini' => "INT NULL",
+						'info' => [
+							'caption' => 'Result',
 							'description' => '',
 						],
 					],
@@ -2127,6 +2661,34 @@
 			'enrollment' => [
 				'registration' => ['full_name'],
 				'classes' => ['class'],
+				'fees_structure' => ['fees_code'],
+			],
+			'fees_payments' => [
+				'enrollment' => ['student'],
+			],
+			'staff' => [
+				'subjects' => ['subject'],
+			],
+			'class_notes' => [
+				'subjects' => ['subject'],
+				'classes' => ['class'],
+			],
+			'assessments' => [
+				'enrollment' => ['class'],
+				'staff' => ['teacher'],
+				'subjects' => ['subject'],
+			],
+			'results' => [
+				'assessments' => ['assess'],
+				'enrollment' => ['student_name'],
+			],
+			'exams' => [
+				'enrollment' => ['class'],
+				'subjects' => ['subject'],
+			],
+			'rizalts' => [
+				'exams' => ['exm_id'],
+				'enrollment' => ['student_name'],
 			],
 		];
 
@@ -2153,15 +2715,32 @@
 		 *             field => query, ...
 		 */
 		return [
-			'enrollment' => [],
+			'enrollment' => [
+				'amount_received' => 'SELECT COALESCE(SUM(`fees_payments`.`amount_received`),0) FROM `fees_payments` JOIN `enrollment` ON
+					`fees_payments`.`student`=`enrollment`.`stid` WHERE `enrollment`.`stid`=\'%ID%\'',
+				'balance' => 'SELECT `enrollment`.`structure`-`enrollment`.`amount_received` FROM `enrollment` 
+					WHERE `enrollment`.`stid`=\'%ID%\'',
+				'structure' => 'SELECT `fees_structure`.`fees` FROM `fees_structure` JOIN `enrollment` ON `fees_structure`.`id`=`enrollment`.`fees_code` 
+					WHERE `enrollment`.`stid`=\'%ID%\'',
+			],
 			'classes' => [
-				'year' => 'SELECT YEAR(NOW()) FROM `classes` 
+				'year' => 'SELECT YEAR(NOW())FROM `classes` 
 					WHERE `classes`.`id`=\'%ID%\'',
 			],
 			'registration' => [
-				'age' => 'SELECT FLOOR(DATEDIFF(NOW(),`registration`.`date_of_birth`)/365) FROM `registration`
+				'age' => 'SELECT YEAR(CURDATE())-YEAR(`registration`.`date_of_birth`)FROM `registration` 
 					WHERE `registration`.`id`=\'%ID%\'',
 			],
+			'fees_structure' => [],
+			'fees_payments' => [],
+			'clearance_tickets' => [],
+			'subjects' => [],
+			'staff' => [],
+			'class_notes' => [],
+			'assessments' => [],
+			'results' => [],
+			'exams' => [],
+			'rizalts' => [],
 		];
 	}
 	#########################################################
@@ -2295,10 +2874,48 @@
 				'full_name' => 'SELECT `registration`.`id`, `registration`.`full_name` FROM `registration` ORDER BY 2',
 				'class' => 'SELECT `classes`.`id`, `classes`.`class` FROM `classes` ORDER BY 2',
 				'year' => 'SELECT `classes`.`id`, `classes`.`year` FROM `classes` ORDER BY 2',
+				'fees_code' => 'SELECT `fees_structure`.`id`, IF(CHAR_LENGTH(`fees_structure`.`code`) || CHAR_LENGTH(`fees_structure`.`fees`), CONCAT_WS(\'\', `fees_structure`.`code`, \'/\', `fees_structure`.`fees`), \'\') FROM `fees_structure` ORDER BY 2',
 			],
 			'classes' => [
 			],
 			'registration' => [
+			],
+			'fees_structure' => [
+			],
+			'fees_payments' => [
+				'student' => 'SELECT `enrollment`.`stid`, IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS(\'\',   `registration1`.`full_name`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'class' => 'SELECT `enrollment`.`stid`, IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS(\'\',   `classes1`.`class`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'term' => 'SELECT `enrollment`.`stid`, `enrollment`.`term` FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+			],
+			'clearance_tickets' => [
+			],
+			'subjects' => [
+			],
+			'staff' => [
+				'subject' => 'SELECT `subjects`.`sub_id`, `subjects`.`subject` FROM `subjects` ORDER BY 2',
+			],
+			'class_notes' => [
+				'subject' => 'SELECT `subjects`.`sub_id`, `subjects`.`subject` FROM `subjects` ORDER BY 2',
+				'class' => 'SELECT `classes`.`id`, `classes`.`class` FROM `classes` ORDER BY 2',
+			],
+			'assessments' => [
+				'class' => 'SELECT `enrollment`.`stid`, IF(CHAR_LENGTH(`enrollment`.`class`) || CHAR_LENGTH(`enrollment`.`term`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS(\'\',   `classes1`.`class`), \'\'), \'-\', `enrollment`.`term`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'teacher' => 'SELECT `staff`.`id`, `staff`.`full_name` FROM `staff` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`staff`.`subject` ORDER BY 2',
+				'subject' => 'SELECT `subjects`.`sub_id`, `subjects`.`subject` FROM `subjects` ORDER BY 2',
+			],
+			'results' => [
+				'assess' => 'SELECT `assessments`.`id`, `assessments`.`id` FROM `assessments` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`assessments`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `staff` as staff1 ON `staff1`.`id`=`assessments`.`teacher` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`assessments`.`subject` ORDER BY 2',
+				'student_name' => 'SELECT `enrollment`.`stid`, IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS(\'\',   `registration1`.`full_name`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'total_marks' => 'SELECT `assessments`.`id`, `assessments`.`total_marks` FROM `assessments` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`assessments`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `staff` as staff1 ON `staff1`.`id`=`assessments`.`teacher` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`assessments`.`subject` ORDER BY 2',
+			],
+			'exams' => [
+				'class' => 'SELECT `enrollment`.`stid`, IF(CHAR_LENGTH(`enrollment`.`class`) || CHAR_LENGTH(`enrollment`.`term`), CONCAT_WS(\'\', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS(\'\',   `classes1`.`class`), \'\'), \'-\', `enrollment`.`term`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'subject' => 'SELECT `subjects`.`sub_id`, `subjects`.`subject` FROM `subjects` ORDER BY 2',
+			],
+			'rizalts' => [
+				'exm_id' => 'SELECT `exams`.`exm_id`, `exams`.`exm_id` FROM `exams` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`exams`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`exams`.`subject` ORDER BY 2',
+				'student_name' => 'SELECT `enrollment`.`stid`, IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS(\'\',   `registration1`.`full_name`), \'\') FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ORDER BY 2',
+				'total_marks' => 'SELECT `exams`.`exm_id`, `exams`.`total_marks` FROM `exams` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`exams`.`class` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` LEFT JOIN `subjects` as subjects1 ON `subjects1`.`sub_id`=`exams`.`subject` ORDER BY 2',
 			],
 		];
 

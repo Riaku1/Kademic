@@ -76,7 +76,7 @@
 			/* is the current table filter-first? */
 			$tChkFF = array_search($tn, []);
 			/* hide current table in homepage? */
-			$tChkHL = array_search($tn, []);
+			$tChkHL = array_search($tn, ['fees_payments','results','rizalts']);
 			/* allow homepage 'add new' for current table? */
 			$tChkAHAN = array_search($tn, []);
 

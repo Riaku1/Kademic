@@ -14,9 +14,16 @@
 
 <div class="panel-body">
 	<fieldset class="form-horizontal">
-		<!-- Field: StID -->
+		<!-- Field: Date -->
+		<div class="form-group enrollment-date" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Date</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><%%COMBOTEXT(date)%%></div>
+			</div>
+		</div>
+		<!-- Field: Stid -->
 		<div class="form-group enrollment-stid" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">StID</label>
+			<label class="col-xs-3 control-label">Stid</label>
 			<div class="col-xs-9">
 				<div class="form-control-static"><%%VALUE(stid)%%></div>
 			</div>
@@ -35,13 +42,6 @@
 				<div class="form-control-static"><span id="class<%%RND1%%>"><%%COMBOTEXT(class)%%></span></div>
 			</div>
 		</div>
-		<!-- Field: Year -->
-		<div class="form-group enrollment-year" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">Year</label>
-			<div class="col-xs-9">
-				<div class="form-control-static"><span id="year<%%RND1%%>"></span></div>
-			</div>
-		</div>
 		<!-- Field: Term -->
 		<div class="form-group enrollment-term" style="border-bottom: dotted 1px #DDD;">
 			<label class="col-xs-3 control-label">Term</label>
@@ -49,11 +49,11 @@
 				<div class="form-control-static"><%%COMBOTEXT(term)%%></div>
 			</div>
 		</div>
-		<!-- Field: Total fees -->
-		<div class="form-group enrollment-total_fees" style="border-bottom: dotted 1px #DDD;">
-			<label class="col-xs-3 control-label">Total fees</label>
+		<!-- Field: Fees code -->
+		<div class="form-group enrollment-fees_code" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Fees code</label>
 			<div class="col-xs-9">
-				<div class="form-control-static"><%%VALUE(total_fees)%%></div>
+				<div class="form-control-static"><span id="fees_code<%%RND1%%>"><%%COMBOTEXT(fees_code)%%></span></div>
 			</div>
 		</div>
 		<!-- Field: Amount received -->
@@ -70,6 +70,13 @@
 				<div class="form-control-static"><%%VALUE(balance)%%></div>
 			</div>
 		</div>
+		<!-- Field: Cleared -->
+		<div class="form-group enrollment-cleared" style="border-bottom: dotted 1px #DDD;">
+			<label class="col-xs-3 control-label">Cleared</label>
+			<div class="col-xs-9">
+				<div class="form-control-static"><input type="checkbox" name="cleared" id="cleared" value="1" <%%CHECKED(cleared)%%> readonly></div>
+			</div>
+		</div>
 	</fieldset>
 </div>
 <script>
@@ -83,3 +90,32 @@
 			.after('<i class="glyphicon glyphicon-unchecked"></i>')
 	})
 </script>
+<!-- child records -->
+<div class="panel-body">
+	<div id="enrollment-children"></div>
+</div>
+
+<script>
+	$j(function() {
+		/* prevent loading child records in multiple DVP */
+		if($j('[id=enrollment-children]').length > 1) return;
+
+		post(
+			'parent-children.php', {
+				ParentTable: 'enrollment',
+				SelectedID: '<%%VALUE(stid)%%>',
+				Operation: 'show-children-printable'
+			},
+			'enrollment-children',
+			'disable-element',
+			'loading-element',
+			apply_persisting_children
+		);
+
+		$j('form').on('click', '#children-tabs button[data-target]', function() {
+			$j(this).toggleClass('active');
+			persist_expanded_child($j(this).attr('id'));
+		});
+	})
+</script>
+

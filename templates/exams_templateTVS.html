@@ -1,0 +1,15 @@
+<!-- Edit this file to change the layout of each record in the table view -->
+<!-- To disable clicking of a field, remove the  and  formatters around it-->
+
+<!-- If you wish to hide the table view header that contains the column titles, -->
+<!-- add the following to the exams_init() hook (in hooks/exams.php file) -->
+<!--     $options->ShowTableHeader = 0;     -->
+
+		<td id="exams-class-<%%VALUE(exm_id)%%>" class="exams-class"><%%VALUE(class)%%></td>
+		<td id="exams-total_marks-<%%VALUE(exm_id)%%>" class="exams-total_marks text-right"><%%VALUE(total_marks)%%></td>
+		<td id="exams-teacher-<%%VALUE(exm_id)%%>" class="exams-teacher"><%%VALUE(teacher)%%></td>
+		<td id="exams-subject-<%%VALUE(exm_id)%%>" class="exams-subject"><%%VALUE(subject)%%></td>
+		<td id="exams-avg_performance-<%%VALUE(exm_id)%%>" class="exams-avg_performance text-right"><%%VALUE(avg_performance)%%></td>
+		<td id="exams-highest_mark-<%%VALUE(exm_id)%%>" class="exams-highest_mark text-right"><%%VALUE(highest_mark)%%></td>
+		<td id="exams-lowest_mark-<%%VALUE(exm_id)%%>" class="exams-lowest_mark text-right"><%%VALUE(lowest_mark)%%></td>
+		<td id="exams-date-<%%VALUE(exm_id)%%>" class="exams-date"><%%VALUE(date)%%></td>

@@ -385,6 +385,7 @@ function enrollment_validateData() {
 	// check all required fields have values
 	if(!AppGini.Validation.fieldRequired('lookup', 'full_name', 'Full name')) return false;
 	if(!AppGini.Validation.fieldRequired('lookup', 'class', 'Class')) return false;
+	if(!AppGini.Validation.fieldRequired('radio', 'term', 'Term')) return false;
 
 	return !errors;
 }
@@ -404,12 +405,13 @@ function registration_validateData() {
 	// check all required fields have values
 	[
 		// [field-type, field-name, field-caption], ...
+		['image', 'photo', 'Photo'],
 		['text', 'full_name', 'Full name'],
 		['date', 'date_of_birth', 'Date of birth'],
 		['radio', 'gender', 'Gender'],
-		['text', 'parent_gurdian', 'Parent /Gurdian'],
+		['text', 'parent_gurdian', 'Parent gurdian'],
 		['text', 'contact', 'Contact'],
-		['text', 'address', 'Address/Residence'],
+		['text', 'address', 'Address'],
 		[]
 	].map(function(rf) {
 		// avoid displaying more error messages and overwhelming users
@@ -421,10 +423,125 @@ function registration_validateData() {
 	if(errors) return false;
 
 	// check file uploads (file type and size)
-	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 102400)) {
+	if($j('#photo').val() && !AppGini.checkFileUpload('photo', 'jpg|jpeg|gif|png|webp', 7168000)) {
 		AppGini.scrollTo('photo');
 		return false;
 	}
+
+	return !errors;
+}
+function fees_structure_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	// check all required fields have values
+	if(!AppGini.Validation.fieldRequired('text', 'code', 'Code')) return false;
+	if(!AppGini.Validation.fieldRequired('text', 'fees', 'Fees')) return false;
+
+	return !errors;
+}
+function fees_payments_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	// check all required fields have values
+	if(!AppGini.Validation.fieldRequired('lookup', 'student', 'Student name')) return false;
+	if(!AppGini.Validation.fieldRequired('text', 'amount_received', 'Amount received')) return false;
+	if(!AppGini.Validation.fieldRequired('text', 'received_from', 'Received from')) return false;
+
+	return !errors;
+}
+function clearance_tickets_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	return !errors;
+}
+function subjects_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	// check all required fields have values
+	if(!AppGini.Validation.fieldRequired('text', 'subject', 'Subject')) return false;
+
+	return !errors;
+}
+function staff_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	// check all required fields have values
+	[
+		// [field-type, field-name, field-caption], ...
+		['text', 'staff_id', 'Staff id'],
+		['text', 'full_name', 'Full name'],
+		['text', 'contact', 'Contact'],
+		['lookup', 'subject', 'Subject'],
+		['date', 'date_of_joining', 'Date of joining'],
+		['date', 'contract_ends', 'Contract ends'],
+		[]
+	].map(function(rf) {
+		// avoid displaying more error messages and overwhelming users
+		if(rf.length != 3 || errors) return;
+
+		if(!AppGini.Validation.fieldRequired(rf[0], rf[1], rf[2])) errors = true;
+	});
+
+	if(errors) return false;
+
+	return !errors;
+}
+function class_notes_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	// check all required fields have values
+	[
+		// [field-type, field-name, field-caption], ...
+		['lookup', 'subject', 'Subject'],
+		['lookup', 'class', 'Class'],
+		['radio', 'term', 'Term'],
+		['html', 'topics', 'Topics'],
+		['file', 'resource', 'Resource'],
+		[]
+	].map(function(rf) {
+		// avoid displaying more error messages and overwhelming users
+		if(rf.length != 3 || errors) return;
+
+		if(!AppGini.Validation.fieldRequired(rf[0], rf[1], rf[2])) errors = true;
+	});
+
+	if(errors) return false;
+
+	// check file uploads (file type and size)
+	if($j('#resource').val() && !AppGini.checkFileUpload('resource', 'ppt|pptx|pptm|pdf|ppsx|ppsm|pps|odp', 20480000)) {
+		AppGini.scrollTo('resource');
+		return false;
+	}
+
+	return !errors;
+}
+function assessments_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	return !errors;
+}
+function results_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	return !errors;
+}
+function exams_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
+
+	return !errors;
+}
+function rizalts_validateData() {
+	$j('.has-error').removeClass('has-error');
+	var errors = false;
 
 	return !errors;
 }

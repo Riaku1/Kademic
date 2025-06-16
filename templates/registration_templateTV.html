@@ -5,9 +5,13 @@
 <!-- add the following to the registration_init() hook (in hooks/registration.php file) -->
 <!--     $options->ShowTableHeader = 0;     -->
 
+		<td id="registration-id-<%%VALUE(id)%%>" class="registration-id text-right"><%%SELECT%%><%%VALUE(id)%%><%%ENDSELECT%%></td>
 		<td id="registration-date_of_joining-<%%VALUE(id)%%>" class="registration-date_of_joining"><%%SELECT%%><%%VALUE(date_of_joining)%%><%%ENDSELECT%%></td>
 		<td id="registration-photo-<%%VALUE(id)%%>" class="registration-photo"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="registration-photo"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=registration&f=photo&v=tv" class="img-thumbnail"></a></td>
 		<td id="registration-full_name-<%%VALUE(id)%%>" class="registration-full_name"><%%SELECT%%><%%VALUE(full_name)%%><%%ENDSELECT%%></td>
 		<td id="registration-date_of_birth-<%%VALUE(id)%%>" class="registration-date_of_birth"><%%SELECT%%><%%VALUE(date_of_birth)%%><%%ENDSELECT%%></td>
 		<td id="registration-age-<%%VALUE(id)%%>" class="registration-age text-right"><%%SELECT%%><%%VALUE(age)%%><%%ENDSELECT%%></td>
 		<td id="registration-gender-<%%VALUE(id)%%>" class="registration-gender"><%%SELECT%%><%%VALUE(gender)%%><%%ENDSELECT%%></td>
+		<td id="registration-parent_gurdian-<%%VALUE(id)%%>" class="registration-parent_gurdian"><%%SELECT%%><%%VALUE(parent_gurdian)%%><%%ENDSELECT%%></td>
+		<td id="registration-contact-<%%VALUE(id)%%>" class="registration-contact text-right"><%%SELECT%%><%%VALUE(contact)%%><%%ENDSELECT%%></td>
+		<td id="registration-address-<%%VALUE(id)%%>" class="registration-address"><%%SELECT%%><%%VALUE(address)%%><%%ENDSELECT%%></td>

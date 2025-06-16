@@ -15,7 +15,7 @@ function registration_insert(&$error_message = '') {
 	$data = [
 		'date_of_joining' => Request::dateComponents('date_of_joining', '1'),
 		'photo' => Request::fileUpload('photo', [
-			'maxSize' => 102400,
+			'maxSize' => 7168000,
 			'types' => 'jpg|jpeg|gif|png|webp',
 			'noRename' => false,
 			'dir' => '',
@@ -38,6 +38,11 @@ function registration_insert(&$error_message = '') {
 		'address' => Request::val('address', ''),
 	];
 
+	if($data['photo'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Photo': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 	if($data['full_name'] === '') {
 		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Full name': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
@@ -54,7 +59,7 @@ function registration_insert(&$error_message = '') {
 		exit;
 	}
 	if($data['parent_gurdian'] === '') {
-		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Parent /Gurdian': {$Translation['field not null']}<br><br>";
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Parent gurdian': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -64,7 +69,7 @@ function registration_insert(&$error_message = '') {
 		exit;
 	}
 	if($data['address'] === '') {
-		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Address/Residence': {$Translation['field not null']}<br><br>";
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Address': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -161,6 +166,18 @@ function registration_delete($selected_id, $AllowDeleteOfParents = false, $skipC
 		return $RetMsg;
 	}
 
+	// delete file stored in the 'photo' field
+	$res = sql("SELECT `photo` FROM `registration` WHERE `id`='{$selected_id}'", $eo);
+	if($row = @db_fetch_row($res)) {
+		if($row[0] != '') {
+			@unlink(getUploadDir('') . $row[0]);
+			$thumbDV = preg_replace('/\.(jpg|jpeg|gif|png|webp)$/i', '_dv.$1', $row[0]);
+			$thumbTV = preg_replace('/\.(jpg|jpeg|gif|png|webp)$/i', '_tv.$1', $row[0]);
+			@unlink(getUploadDir('') . $thumbTV);
+			@unlink(getUploadDir('') . $thumbDV);
+		}
+	}
+
 	sql("DELETE FROM `registration` WHERE `id`='{$selected_id}'", $eo);
 
 	// hook: registration_after_delete
@@ -182,7 +199,7 @@ function registration_update(&$selected_id, &$error_message = '') {
 	$data = [
 		'date_of_joining' => Request::dateComponents('date_of_joining', ''),
 		'photo' => Request::fileUpload('photo', [
-			'maxSize' => 102400,
+			'maxSize' => 7168000,
 			'types' => 'jpg|jpeg|gif|png|webp',
 			'noRename' => false,
 			'dir' => '',
@@ -191,9 +208,21 @@ function registration_update(&$selected_id, &$error_message = '') {
 				createThumbnail($name, getThumbnailSpecs('registration', 'photo', 'tv'));
 				createThumbnail($name, getThumbnailSpecs('registration', 'photo', 'dv'));
 			},
-			'removeOnRequest' => true,
+			'removeOnSuccess' => true,
+			'removeOnRequest' => false,
 			'remove' => function($selected_id) {
-				// do nothing: preserve removed files on server.
+				// delete old file from server
+				$oldFile = existing_value('registration', 'photo', $selected_id);
+				if(!$oldFile) return;
+
+				@unlink(getUploadDir('') . $oldFile);
+
+				// delete thumbnails
+				preg_match('/^[a-z0-9_]+\.(jpg|jpeg|gif|png|webp)$/i', $oldFile, $m);
+				$thumbDV = str_replace(".{$m[1]}ffffgggg", "_dv.{$m[1]}", $oldFile . 'ffffgggg');
+				$thumbTV = str_replace(".{$m[1]}ffffgggg", "_tv.{$m[1]}", $oldFile . 'ffffgggg');
+				@unlink(getUploadDir('') . $thumbTV);
+				@unlink(getUploadDir('') . $thumbDV);
 			},
 			'failure' => function($selected_id, $fileRemoved) {
 				if($fileRemoved) return '';
@@ -208,6 +237,11 @@ function registration_update(&$selected_id, &$error_message = '') {
 		'address' => Request::val('address', ''),
 	];
 
+	if($data['photo'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Photo': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 	if($data['full_name'] === '') {
 		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Full name': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
@@ -224,7 +258,7 @@ function registration_update(&$selected_id, &$error_message = '') {
 		exit;
 	}
 	if($data['parent_gurdian'] === '') {
-		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Parent /Gurdian': {$Translation['field not null']}<br><br>";
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Parent gurdian': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -234,7 +268,7 @@ function registration_update(&$selected_id, &$error_message = '') {
 		exit;
 	}
 	if($data['address'] === '') {
-		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Address/Residence': {$Translation['field not null']}<br><br>";
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'Address': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -302,7 +336,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 	$noUploads = null;
 	$row = $urow = $jsReadOnly = $jsEditable = $lookups = null;
 
-	$noSaveAsCopy = true;
+	$noSaveAsCopy = false;
 
 	// mm: get table permissions
 	$arrPerm = getTablePermissions('registration');
@@ -349,7 +383,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 		$combo_gender->ListItem = array_trim(explode('||', entitiesToUTF8(convertLegacyOptions($gender_data))));
 		$combo_gender->ListData = $combo_gender->ListItem;
 	} else {
-		$combo_gender->ListItem = array_trim(explode('||', entitiesToUTF8(convertLegacyOptions("Female;;Male"))));
+		$combo_gender->ListItem = array_trim(explode('||', entitiesToUTF8(convertLegacyOptions("Girl;;Boy"))));
 		$combo_gender->ListData = $combo_gender->ListItem;
 	}
 	$combo_gender->SelectName = 'gender';
@@ -410,11 +444,11 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 	}
 
 	// process form title
-	$templateCode = str_replace('<%%DETAIL_VIEW_TITLE%%>', 'Student details', $templateCode);
+	$templateCode = str_replace('<%%DETAIL_VIEW_TITLE%%>', 'Detail View', $templateCode);
 	$templateCode = str_replace('<%%RND1%%>', $rnd1, $templateCode);
 	$templateCode = str_replace('<%%EMBEDDED%%>', (Request::val('Embedded') ? 'Embedded=1' : ''), $templateCode);
 	// process buttons
-	if($arrPerm['insert'] && !$selected_id) { // allow insert and no record selected?
+	if($AllowInsert) {
 		if(!$selected_id) $templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-success" id="insert" name="insert_x" value="1" onclick="return registration_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save New'] . '</button>', $templateCode);
 		$templateCode = str_replace('<%%INSERT_BUTTON%%>', '<button type="submit" class="btn btn-default" id="insert" name="insert_x" value="1" onclick="return registration_validateData();"><i class="glyphicon glyphicon-plus-sign"></i> ' . $Translation['Save As Copy'] . '</button>', $templateCode);
 	} else {
@@ -474,7 +508,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 	}
 
 	// set records to read only if user can't insert new records and can't edit current record
-	if(($selected_id && !$AllowUpdate) || (!$selected_id && !$AllowInsert)) {
+	if(($selected_id && !$AllowUpdate && !$AllowInsert) || (!$selected_id && !$AllowInsert)) {
 		$jsReadOnly = '';
 		$jsReadOnly .= "\tjQuery('#date_of_joining').prop('readonly', true);\n";
 		$jsReadOnly .= "\tjQuery('#date_of_joiningDay, #date_of_joiningMonth, #date_of_joiningYear').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
@@ -489,7 +523,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 		$jsReadOnly .= "\tjQuery('.select2-container').hide();\n";
 
 		$noUploads = true;
-	} elseif(($AllowInsert && !$selected_id) || ($AllowUpdate && $selected_id)) {
+	} elseif($AllowInsert) {
 		$jsEditable = "\tjQuery('form').eq(0).data('already_changed', true);"; // temporarily disable form change handler
 		$jsEditable .= "\tjQuery('form').eq(0).data('already_changed', false);"; // re-enable form change handler
 	}
@@ -531,7 +565,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 	// process images
 	$templateCode = str_replace('<%%UPLOADFILE(id)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(date_of_joining)%%>', '', $templateCode);
-	$templateCode = str_replace('<%%UPLOADFILE(photo)%%>', ($noUploads ? '' : "<div>{$Translation['upload image']}</div>" . '<input type="file" name="photo" id="photo" data-filetypes="jpg|jpeg|gif|png|webp" data-maxsize="102400" style="max-width: calc(100% - 1.5rem);" accept="capture=camera,image/*">' . '<i class="text-danger clear-upload hidden pull-right" style="margin-top: -.1em; font-size: large;">&times;</i>'), $templateCode);
+	$templateCode = str_replace('<%%UPLOADFILE(photo)%%>', ($noUploads ? '' : "<div>{$Translation['upload image']}</div>" . '<input type="file" name="photo" id="photo" data-filetypes="jpg|jpeg|gif|png|webp" data-maxsize="7168000" style="max-width: calc(100% - 1.5rem);" accept="capture=camera,image/*">' . '<i class="text-danger clear-upload hidden pull-right" style="margin-top: -.1em; font-size: large;">&times;</i>'), $templateCode);
 	if($AllowUpdate && $row['photo'] != '') {
 		$templateCode = str_replace('<%%REMOVEFILE(photo)%%>', '<input type="checkbox" name="photo_remove" id="photo_remove" value="1"> <label for="photo_remove" style="color: red; font-weight: bold;">'.$Translation['remove image'].'</label>', $templateCode);
 	} else {
@@ -547,8 +581,7 @@ function registration_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1
 
 	// process values
 	if($selected_id) {
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(id)%%>', safe_html($urow['id']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(id)%%>', html_attr($row['id']), $templateCode);
+		$templateCode = str_replace('<%%VALUE(id)%%>', safe_html($urow['id']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(id)%%>', urlencode($urow['id']), $templateCode);
 		$templateCode = str_replace('<%%VALUE(date_of_joining)%%>', app_datetime($row['date_of_joining']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(date_of_joining)%%>', urlencode(app_datetime($urow['date_of_joining'])), $templateCode);

@@ -10,7 +10,8 @@
 		var data = {
 			full_name: <?php echo json_encode(['id' => $rdata['full_name'], 'value' => $rdata['full_name'], 'text' => $jdata['full_name']]); ?>,
 			class: <?php echo json_encode(['id' => $rdata['class'], 'value' => $rdata['class'], 'text' => $jdata['class']]); ?>,
-			year: <?php echo json_encode($jdata['year']); ?>
+			year: <?php echo json_encode($jdata['year']); ?>,
+			fees_code: <?php echo json_encode(['id' => $rdata['fees_code'], 'value' => $rdata['fees_code'], 'text' => $jdata['fees_code']]); ?>
 		};
 
 		/* initialize or continue using AppGini.cache for the current table */
@@ -45,6 +46,14 @@
 				return true;
 			}
 
+			return false;
+		});
+
+		/* saved value for fees_code */
+		cache.addCheck(function(u, d) {
+			if(u != 'ajax_combo.php') return false;
+			if(d.t == tn && d.f == 'fees_code' && d.id == data.fees_code.id)
+				return { results: [ data.fees_code ], more: false, elapsed: 0.01 };
 			return false;
 		});
 

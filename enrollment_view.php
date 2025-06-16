@@ -18,66 +18,81 @@
 
 	// Fields that can be displayed in the table view
 	$x->QueryFieldsTV = [
+		"if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'')" => "date",
 		"`enrollment`.`stid`" => "stid",
 		"IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') /* Full name */" => "full_name",
 		"IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') /* Class */" => "class",
-		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
 		"`enrollment`.`term`" => "term",
-		"`enrollment`.`total_fees`" => "total_fees",
+		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
+		"IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') /* Fees code */" => "fees_code",
 		"`enrollment`.`amount_received`" => "amount_received",
 		"`enrollment`.`balance`" => "balance",
+		"concat('<i class=\"glyphicon glyphicon-', if(`enrollment`.`cleared`, 'check', 'unchecked'), '\"></i>')" => "cleared",
+		"`enrollment`.`structure`" => "structure",
 	];
 	// mapping incoming sort by requests to actual query fields
 	$x->SortFields = [
-		1 => '`enrollment`.`stid`',
-		2 => '`registration1`.`full_name`',
-		3 => '`classes1`.`class`',
-		4 => '`classes1`.`year`',
+		1 => '`enrollment`.`date`',
+		2 => '`enrollment`.`stid`',
+		3 => '`registration1`.`full_name`',
+		4 => '`classes1`.`class`',
 		5 => 5,
-		6 => '`enrollment`.`total_fees`',
-		7 => '`enrollment`.`amount_received`',
-		8 => '`enrollment`.`balance`',
+		6 => '`classes1`.`year`',
+		7 => 7,
+		8 => '`enrollment`.`amount_received`',
+		9 => '`enrollment`.`balance`',
+		10 => 10,
+		11 => '`enrollment`.`structure`',
 	];
 
 	// Fields that can be displayed in the csv file
 	$x->QueryFieldsCSV = [
+		"if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'')" => "date",
 		"`enrollment`.`stid`" => "stid",
 		"IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') /* Full name */" => "full_name",
 		"IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') /* Class */" => "class",
-		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
 		"`enrollment`.`term`" => "term",
-		"`enrollment`.`total_fees`" => "total_fees",
+		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
+		"IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') /* Fees code */" => "fees_code",
 		"`enrollment`.`amount_received`" => "amount_received",
 		"`enrollment`.`balance`" => "balance",
+		"`enrollment`.`cleared`" => "cleared",
+		"`enrollment`.`structure`" => "structure",
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
-		"`enrollment`.`stid`" => "StID",
+		"`enrollment`.`date`" => "Date",
+		"`enrollment`.`stid`" => "Stid",
 		"IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') /* Full name */" => "Full name",
 		"IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') /* Class */" => "Class",
-		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "Year",
 		"`enrollment`.`term`" => "Term",
-		"`enrollment`.`total_fees`" => "Total fees",
+		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "Year",
+		"IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') /* Fees code */" => "Fees code",
 		"`enrollment`.`amount_received`" => "Amount received",
 		"`enrollment`.`balance`" => "Balance",
+		"`enrollment`.`cleared`" => "Cleared",
+		"`enrollment`.`structure`" => "Structure",
 	];
 
 	// Fields that can be quick searched
 	$x->QueryFieldsQS = [
+		"if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'')" => "date",
 		"`enrollment`.`stid`" => "stid",
 		"IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') /* Full name */" => "full_name",
 		"IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') /* Class */" => "class",
-		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
 		"`enrollment`.`term`" => "term",
-		"`enrollment`.`total_fees`" => "total_fees",
+		"IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') /* Year */" => "year",
+		"IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') /* Fees code */" => "fees_code",
 		"`enrollment`.`amount_received`" => "amount_received",
 		"`enrollment`.`balance`" => "balance",
+		"concat('<i class=\"glyphicon glyphicon-', if(`enrollment`.`cleared`, 'check', 'unchecked'), '\"></i>')" => "cleared",
+		"`enrollment`.`structure`" => "structure",
 	];
 
 	// Lookup fields that can be used as filterers
-	$x->filterers = ['full_name' => 'Full name', 'class' => 'Class', ];
+	$x->filterers = ['full_name' => 'Full name', 'class' => 'Class', 'fees_code' => 'Fees code', ];
 
-	$x->QueryFrom = "`enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` ";
+	$x->QueryFrom = "`enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` ";
 	$x->QueryWhere = '';
 	$x->QueryOrder = '';
 
@@ -100,14 +115,14 @@
 	$x->QuickSearch = 1;
 	$x->QuickSearchText = $Translation['quick search'];
 	$x->ScriptFileName = 'enrollment_view.php';
-	$x->TableTitle = 'Enrolled';
-	$x->TableIcon = 'table.gif';
+	$x->TableTitle = 'Enrollment';
+	$x->TableIcon = 'resources/table_icons/user_edit.png';
 	$x->PrimaryKey = '`enrollment`.`stid`';
 
-	$x->ColWidth = [150, 150, 150, 150, 80, 150, 150, ];
-	$x->ColCaption = ['Full name', 'Class', 'Year', 'Term', 'Total fees', 'Amount received', 'Balance', ];
-	$x->ColFieldName = ['full_name', 'class', 'year', 'term', 'total_fees', 'amount_received', 'balance', ];
-	$x->ColNumber  = [2, 3, 4, 5, 6, 7, 8, ];
+	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, ];
+	$x->ColCaption = ['Date', 'Stid', 'Full name', 'Class', 'Term', 'Amount received', 'Balance', 'Cleared', ];
+	$x->ColFieldName = ['date', 'stid', 'full_name', 'class', 'term', 'amount_received', 'balance', 'cleared', ];
+	$x->ColNumber  = [1, 2, 3, 4, 5, 8, 9, 10, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/enrollment_templateTV.html';
@@ -118,7 +133,7 @@
 	$x->ShowTableHeader = 1;
 	$x->TVClasses = "";
 	$x->DVClasses = "";
-	$x->HasCalculatedFields = false;
+	$x->HasCalculatedFields = true;
 	$x->AllowConsoleLog = false;
 	$x->AllowDVNavigation = true;
 

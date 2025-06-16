@@ -9,8 +9,8 @@
 	<!-- child links -->
 	<div class="row vspacer-md">
 		<div class="col-xs-12 children-links">
-			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="enrollment_view.php?filterer_full_name=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="enrollment_link"><img src="table.gif"> Enrolled</a>
-			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="enrollment_view.php?filterer_full_name=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_enrollment_link"><img src="table.gif"> Enrolled</a>
+			<a class="hidden-xs btn btn-default btn-lg pull-right hidden hspacer-sm vspacer-sm" href="enrollment_view.php?filterer_full_name=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="enrollment_link"><img src="resources/table_icons/user_edit.png"> Enrollment</a>
+			<a class="visible-xs btn btn-default btn-lg btn-block hidden vspacer-sm" href="enrollment_view.php?filterer_full_name=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>" id="xs_enrollment_link"><img src="resources/table_icons/user_edit.png"> Enrollment</a>
 			<input type="hidden" id="enrollment_hclink" value="enrollment_view.php?filterer_full_name=<%%URLVALUE(id)%%>&<%%EMBEDDED%%>">
 			<div class="clearfix"></div>
 		</div>
@@ -22,10 +22,10 @@
 		<div class="col-md-8 col-lg-10" id="registration_dv_form">
 			<fieldset class="form-horizontal">
 
-				<!-- Field: ID -->
+				<!-- Field: Id -->
 				<div class="form-group registration-id">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="id">ID</label>
+					<label class="control-label col-lg-3">Id</label>
 					<div class="col-lg-9">
 						<div class="form-control-static" id="id"><%%VALUE(id)%%></div>
 					</div>
@@ -43,15 +43,14 @@
 				<!-- Field: Photo -->
 				<div class="form-group registration-photo">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3">Photo <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
+					<label class="control-label col-lg-3">Photo<span class="text-danger"><%%TRANSLATION(*)%%></span> <i class="glyphicon glyphicon-info-sign text-info" data-toggle="collapse" data-target="#photo-description"></i></label>
 					<div class="col-lg-9">
-						<span class="help-block bspacer-xs collapse" id="photo-description"><div class="alert alert-info bspacer-xs">Maximum file size allowed: 100 KB.<br>Allowed file types: jpg, jpeg, gif, png, webp</div></span>
+						<span class="help-block bspacer-xs collapse" id="photo-description"><div class="alert alert-info bspacer-xs">Maximum file size allowed: 7000 KB.<br>Allowed file types: jpg, jpeg, gif, png, webp</div></span>
 						<div class="form-control-static well well-sm">
 							<div class="row" style="margin-right: 0; margin-left: 0;">
-								<div class="col-lg-8 col-md-6" style="padding-left: 0;"><a href="<%%BASE_UPLOAD_PATH%%><%%VALUE(photo)%%>" data-lightbox="registration_dv"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=registration&f=photo&v=dv" class="img-thumbnail" id="photo-image"></a></div>
+								<div class="col-lg-8 col-md-6" style="padding-left: 0;"><img src="thumbnail.php?i=<%%VALUE(photo)%%>&t=registration&f=photo&v=dv" class="img-thumbnail" id="photo-image"></div>
 								<div class="hidden-md hidden-lg vspacer-lg"></div>
 								<div class="col-lg-4 col-md-6 well upload-toolbox">
-									<%%REMOVEFILE(photo)%%>
 									<%%UPLOADFILE(photo)%%>
 									<div class="text-bold text-danger file-type-error hidden"><%%TRANSLATION(invalid file type)%%></div>
 									<div class="text-bold text-danger file-size-error hidden"><%%TRANSLATION(file too large)%%></div>
@@ -98,10 +97,10 @@
 					</div>
 				</div>
 
-				<!-- Field: Parent /Gurdian -->
+				<!-- Field: Parent gurdian -->
 				<div class="form-group registration-parent_gurdian">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="parent_gurdian">Parent /Gurdian<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<label class="control-label col-lg-3" for="parent_gurdian">Parent gurdian<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="parent_gurdian" id="parent_gurdian" value="<%%VALUE(parent_gurdian)%%>" required>
 					</div>
@@ -112,14 +111,14 @@
 					<hr class="hidden-md hidden-lg">
 					<label class="control-label col-lg-3" for="contact">Contact<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
-						<input type="text" class="form-control" name="contact" id="contact" value="<%%VALUE(contact)%%>" required>
+						<input maxlength="11" type="text" class="form-control" name="contact" id="contact" value="<%%VALUE(contact)%%>" required>
 					</div>
 				</div>
 
-				<!-- Field: Address/Residence -->
+				<!-- Field: Address -->
 				<div class="form-group registration-address">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="address">Address/Residence<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
+					<label class="control-label col-lg-3" for="address">Address<span class="text-danger"><%%TRANSLATION(*)%%></span></label>
 					<div class="col-lg-9">
 						<input maxlength="40" type="text" class="form-control" name="address" id="address" value="<%%VALUE(address)%%>" required>
 					</div>

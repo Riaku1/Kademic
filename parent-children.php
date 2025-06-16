@@ -7,20 +7,20 @@
 
 		$pcConfig = [
 			'enrollment' => [
-				'class' => [
-					'parent-table' => 'classes',
+				'full_name' => [
+					'parent-table' => 'registration',
 					'parent-primary-key' => 'id',
 					'child-primary-key' => 'stid',
-					'child-primary-key-index' => 0,
-					'tab-label' => 'Student records <span class="hidden child-label-enrollment child-field-caption">(Class)</span>',
-					'auto-close' => false,
-					'table-icon' => 'table.gif',
+					'child-primary-key-index' => 1,
+					'tab-label' => 'Enrollment <span class="hidden child-label-enrollment child-field-caption">(Full name)</span>',
+					'auto-close' => true,
+					'table-icon' => 'resources/table_icons/user_edit.png',
 					'display-refresh' => true,
 					'display-add-new' => true,
 					'forced-where' => '',
-					'display-fields' => [1 => 'Full name', 2 => 'Class', 3 => 'Year', 4 => 'Term', 5 => 'Total fees', 6 => 'Amount received', 7 => 'Balance'],
-					'display-field-names' => [1 => 'full_name', 2 => 'class', 3 => 'year', 4 => 'term', 5 => 'total_fees', 6 => 'amount_received', 7 => 'balance'],
-					'sortable-fields' => [0 => '`enrollment`.`stid`', 1 => '`registration1`.`full_name`', 2 => '`classes1`.`class`', 3 => '`classes1`.`year`', 4 => 5, 5 => '`enrollment`.`total_fees`', 6 => '`enrollment`.`amount_received`', 7 => '`enrollment`.`balance`'],
+					'display-fields' => [0 => 'Date', 1 => 'Stid', 2 => 'Full name', 3 => 'Class', 4 => 'Term', 7 => 'Amount received', 8 => 'Balance', 9 => 'Cleared'],
+					'display-field-names' => [0 => 'date', 1 => 'stid', 2 => 'full_name', 3 => 'class', 4 => 'term', 7 => 'amount_received', 8 => 'balance', 9 => 'cleared'],
+					'sortable-fields' => [0 => '`enrollment`.`date`', 1 => '`enrollment`.`stid`', 2 => '`registration1`.`full_name`', 3 => '`classes1`.`class`', 4 => 5, 5 => '`classes1`.`year`', 6 => 7, 7 => '`enrollment`.`amount_received`', 8 => '`enrollment`.`balance`', 9 => 10, 10 => '`enrollment`.`structure`'],
 					'records-per-page' => 10,
 					'default-sort-by' => false,
 					'default-sort-direction' => 'asc',
@@ -29,12 +29,126 @@
 					'show-page-progress' => true,
 					'template' => 'children-enrollment',
 					'template-printable' => 'children-enrollment-printable',
-					'query' => "SELECT `enrollment`.`stid` as 'stid', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'full_name', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') as 'year', `enrollment`.`term` as 'term', `enrollment`.`total_fees` as 'total_fees', `enrollment`.`amount_received` as 'amount_received', `enrollment`.`balance` as 'balance' FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` "
+					'query' => "SELECT if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'') as 'date', `enrollment`.`stid` as 'stid', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'full_name', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', `enrollment`.`term` as 'term', IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') as 'year', IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') as 'fees_code', `enrollment`.`amount_received` as 'amount_received', `enrollment`.`balance` as 'balance', concat('<i class=\"glyphicon glyphicon-', if(`enrollment`.`cleared`, 'check', 'unchecked'), '\"></i>') as 'cleared', `enrollment`.`structure` as 'structure' FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` "
+				],
+				'class' => [
+					'parent-table' => 'classes',
+					'parent-primary-key' => 'id',
+					'child-primary-key' => 'stid',
+					'child-primary-key-index' => 1,
+					'tab-label' => 'Enrollment <span class="hidden child-label-enrollment child-field-caption">(Class)</span>',
+					'auto-close' => true,
+					'table-icon' => 'resources/table_icons/user_edit.png',
+					'display-refresh' => true,
+					'display-add-new' => true,
+					'forced-where' => '',
+					'display-fields' => [0 => 'Date', 1 => 'Stid', 2 => 'Full name', 3 => 'Class', 4 => 'Term', 7 => 'Amount received', 8 => 'Balance', 9 => 'Cleared'],
+					'display-field-names' => [0 => 'date', 1 => 'stid', 2 => 'full_name', 3 => 'class', 4 => 'term', 7 => 'amount_received', 8 => 'balance', 9 => 'cleared'],
+					'sortable-fields' => [0 => '`enrollment`.`date`', 1 => '`enrollment`.`stid`', 2 => '`registration1`.`full_name`', 3 => '`classes1`.`class`', 4 => 5, 5 => '`classes1`.`year`', 6 => 7, 7 => '`enrollment`.`amount_received`', 8 => '`enrollment`.`balance`', 9 => 10, 10 => '`enrollment`.`structure`'],
+					'records-per-page' => 10,
+					'default-sort-by' => false,
+					'default-sort-direction' => 'asc',
+					'open-detail-view-on-click' => true,
+					'display-page-selector' => true,
+					'show-page-progress' => true,
+					'template' => 'children-enrollment',
+					'template-printable' => 'children-enrollment-printable',
+					'query' => "SELECT if(`enrollment`.`date`,date_format(`enrollment`.`date`,'%m/%d/%Y'),'') as 'date', `enrollment`.`stid` as 'stid', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'full_name', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', `enrollment`.`term` as 'term', IF(    CHAR_LENGTH(`classes1`.`year`), CONCAT_WS('',   `classes1`.`year`), '') as 'year', IF(    CHAR_LENGTH(`fees_structure1`.`code`) || CHAR_LENGTH(`fees_structure1`.`fees`), CONCAT_WS('',   `fees_structure1`.`code`, '/', `fees_structure1`.`fees`), '') as 'fees_code', `enrollment`.`amount_received` as 'amount_received', `enrollment`.`balance` as 'balance', concat('<i class=\"glyphicon glyphicon-', if(`enrollment`.`cleared`, 'check', 'unchecked'), '\"></i>') as 'cleared', `enrollment`.`structure` as 'structure' FROM `enrollment` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment`.`class` LEFT JOIN `fees_structure` as fees_structure1 ON `fees_structure1`.`id`=`enrollment`.`fees_code` "
 				],
 			],
 			'classes' => [
 			],
 			'registration' => [
+			],
+			'fees_structure' => [
+			],
+			'fees_payments' => [
+				'student' => [
+					'parent-table' => 'enrollment',
+					'parent-primary-key' => 'stid',
+					'child-primary-key' => 'id',
+					'child-primary-key-index' => 0,
+					'tab-label' => 'Payments <span class="hidden child-label-fees_payments child-field-caption">(Student name)</span>',
+					'auto-close' => true,
+					'table-icon' => 'table.gif',
+					'display-refresh' => true,
+					'display-add-new' => true,
+					'forced-where' => '',
+					'display-fields' => [1 => 'Date', 2 => 'Student name', 5 => 'Amount received', 6 => 'Received from'],
+					'display-field-names' => [1 => 'date', 2 => 'student', 5 => 'amount_received', 6 => 'received_from'],
+					'sortable-fields' => [0 => '`fees_payments`.`id`', 1 => '`fees_payments`.`date`', 2 => 3, 3 => 4, 4 => '`enrollment1`.`term`', 5 => '`fees_payments`.`amount_received`', 6 => 7],
+					'records-per-page' => 10,
+					'default-sort-by' => false,
+					'default-sort-direction' => 'asc',
+					'open-detail-view-on-click' => true,
+					'display-page-selector' => true,
+					'show-page-progress' => true,
+					'template' => 'children-fees_payments',
+					'template-printable' => 'children-fees_payments-printable',
+					'query' => "SELECT `fees_payments`.`id` as 'id', if(`fees_payments`.`date`,date_format(`fees_payments`.`date`,'%m/%d/%Y'),'') as 'date', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student', IF(    CHAR_LENGTH(`classes1`.`class`), CONCAT_WS('',   `classes1`.`class`), '') as 'class', IF(    CHAR_LENGTH(`enrollment1`.`term`), CONCAT_WS('',   `enrollment1`.`term`), '') as 'term', `fees_payments`.`amount_received` as 'amount_received', `fees_payments`.`received_from` as 'received_from' FROM `fees_payments` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`fees_payments`.`student` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` LEFT JOIN `classes` as classes1 ON `classes1`.`id`=`enrollment1`.`class` "
+				],
+			],
+			'clearance_tickets' => [
+			],
+			'subjects' => [
+			],
+			'staff' => [
+			],
+			'class_notes' => [
+			],
+			'assessments' => [
+			],
+			'results' => [
+				'student_name' => [
+					'parent-table' => 'enrollment',
+					'parent-primary-key' => 'stid',
+					'child-primary-key' => 'id',
+					'child-primary-key-index' => 0,
+					'tab-label' => 'Assessment results <span class="hidden child-label-results child-field-caption">(Student name)</span>',
+					'auto-close' => false,
+					'display-refresh' => true,
+					'display-add-new' => true,
+					'forced-where' => '',
+					'display-fields' => [2 => 'Student name', 3 => 'Total marks', 4 => 'Result'],
+					'display-field-names' => [2 => 'student_name', 3 => 'total_marks', 4 => 'result'],
+					'sortable-fields' => [0 => '`results`.`id`', 1 => '`assessments1`.`id`', 2 => 3, 3 => '`assessments1`.`total_marks`', 4 => '`results`.`result`'],
+					'records-per-page' => 10,
+					'default-sort-by' => false,
+					'default-sort-direction' => 'asc',
+					'open-detail-view-on-click' => true,
+					'display-page-selector' => true,
+					'show-page-progress' => true,
+					'template' => 'children-results',
+					'template-printable' => 'children-results-printable',
+					'query' => "SELECT `results`.`id` as 'id', IF(    CHAR_LENGTH(`assessments1`.`id`), CONCAT_WS('',   `assessments1`.`id`), '') as 'assess', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student_name', IF(    CHAR_LENGTH(`assessments1`.`total_marks`), CONCAT_WS('',   `assessments1`.`total_marks`), '') as 'total_marks', `results`.`result` as 'result' FROM `results` LEFT JOIN `assessments` as assessments1 ON `assessments1`.`id`=`results`.`assess` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`results`.`student_name` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` "
+				],
+			],
+			'exams' => [
+			],
+			'rizalts' => [
+				'student_name' => [
+					'parent-table' => 'enrollment',
+					'parent-primary-key' => 'stid',
+					'child-primary-key' => 'id',
+					'child-primary-key-index' => 0,
+					'tab-label' => 'Exam results <span class="hidden child-label-rizalts child-field-caption">(Student name)</span>',
+					'auto-close' => false,
+					'display-refresh' => true,
+					'display-add-new' => true,
+					'forced-where' => '',
+					'display-fields' => [2 => 'Student name', 3 => 'Total marks', 4 => 'Result'],
+					'display-field-names' => [2 => 'student_name', 3 => 'total_marks', 4 => 'result'],
+					'sortable-fields' => [0 => '`rizalts`.`id`', 1 => '`exams1`.`exm_id`', 2 => 3, 3 => '`exams1`.`total_marks`', 4 => '`rizalts`.`result`'],
+					'records-per-page' => 10,
+					'default-sort-by' => false,
+					'default-sort-direction' => 'asc',
+					'open-detail-view-on-click' => true,
+					'display-page-selector' => true,
+					'show-page-progress' => true,
+					'template' => 'children-rizalts',
+					'template-printable' => 'children-rizalts-printable',
+					'query' => "SELECT `rizalts`.`id` as 'id', IF(    CHAR_LENGTH(`exams1`.`exm_id`), CONCAT_WS('',   `exams1`.`exm_id`), '') as 'exm_id', IF(    CHAR_LENGTH(`registration1`.`full_name`), CONCAT_WS('',   `registration1`.`full_name`), '') as 'student_name', IF(    CHAR_LENGTH(`exams1`.`total_marks`), CONCAT_WS('',   `exams1`.`total_marks`), '') as 'total_marks', `rizalts`.`result` as 'result' FROM `rizalts` LEFT JOIN `exams` as exams1 ON `exams1`.`exm_id`=`rizalts`.`exm_id` LEFT JOIN `enrollment` as enrollment1 ON `enrollment1`.`stid`=`rizalts`.`student_name` LEFT JOIN `registration` as registration1 ON `registration1`.`id`=`enrollment1`.`full_name` "
+				],
 			],
 		];
 
